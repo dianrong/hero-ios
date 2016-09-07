@@ -8,6 +8,6 @@
 
 @import UIKit;
 
-@interface HeroViewController : UIViewController
+@interface HeroViewController1 : UIViewController
 
 @end

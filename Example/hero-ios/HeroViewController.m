@@ -8,11 +8,11 @@
 
 #import "HeroViewController.h"
 
-@interface HeroViewController ()
+@interface HeroViewController1 ()
 
 @end
 
-@implementation HeroViewController
+@implementation HeroViewController1
 
 - (void)viewDidLoad
 {

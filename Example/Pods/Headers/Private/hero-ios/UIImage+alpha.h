@@ -1,0 +1,1 @@
+../../../../../hero-ios/Classes/UIImage+alpha.h

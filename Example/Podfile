@@ -1,11 +1,6 @@
-use_frameworks!
+platform :ios, '7.0'
 
 target 'hero-ios_Example' do
   pod 'hero-ios', :path => '../'
 
-  target 'hero-ios_Tests' do
-    inherit! :search_paths
-
-    pod 'FBSnapshotTestCase'
-  end
 end

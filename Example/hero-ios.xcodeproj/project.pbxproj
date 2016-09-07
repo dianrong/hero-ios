@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F060C027DC16B9824FA0FDF /* Pods_hero_ios_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F3F2263B72A8FB2DC66A004 /* Pods_hero_ios_Tests.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -22,7 +21,7 @@
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
-		DE04519DF743C85CA1B88B75 /* Pods_hero_ios_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1EF8F1F90F4A3F76AA98524 /* Pods_hero_ios_Example.framework */; };
+		CF5E552878747D31135DB1C3 /* libPods-hero-ios_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9DAEE768B1E135BAD4C3D3 /* libPods-hero-ios_Example.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,13 +56,11 @@
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		734F6C723B0642217EC86FFC /* Pods-hero-ios_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero-ios_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-hero-ios_Example/Pods-hero-ios_Example.release.xcconfig"; sourceTree = "<group>"; };
-		84726D08AE85CF9A693D11F8 /* Pods-hero-ios_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero-ios_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-hero-ios_Tests/Pods-hero-ios_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		8EFD16E057FB640A8B1C3D8F /* hero-ios.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "hero-ios.podspec"; path = "../hero-ios.podspec"; sourceTree = "<group>"; };
 		8F3F2263B72A8FB2DC66A004 /* Pods_hero_ios_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_hero_ios_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1EF8F1F90F4A3F76AA98524 /* Pods_hero_ios_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_hero_ios_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6CA0C8CAB6A2325278F3A17 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		E4B8FE7277A1B0B318B9D28F /* Pods-hero-ios_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-hero-ios_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-hero-ios_Tests/Pods-hero-ios_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		EA9DAEE768B1E135BAD4C3D3 /* libPods-hero-ios_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-hero-ios_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED3D317E0B52BAE8A8233614 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -75,7 +72,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				DE04519DF743C85CA1B88B75 /* Pods_hero_ios_Example.framework in Frameworks */,
+				CF5E552878747D31135DB1C3 /* libPods-hero-ios_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +83,6 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				2F060C027DC16B9824FA0FDF /* Pods_hero_ios_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,8 +94,6 @@
 			children = (
 				1AACF230C2F104058DB4788C /* Pods-hero-ios_Example.debug.xcconfig */,
 				734F6C723B0642217EC86FFC /* Pods-hero-ios_Example.release.xcconfig */,
-				E4B8FE7277A1B0B318B9D28F /* Pods-hero-ios_Tests.debug.xcconfig */,
-				84726D08AE85CF9A693D11F8 /* Pods-hero-ios_Tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -132,8 +126,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				C1EF8F1F90F4A3F76AA98524 /* Pods_hero_ios_Example.framework */,
 				8F3F2263B72A8FB2DC66A004 /* Pods_hero_ios_Tests.framework */,
+				EA9DAEE768B1E135BAD4C3D3 /* libPods-hero-ios_Example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -541,7 +535,6 @@
 		};
 		6003F5C3195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E4B8FE7277A1B0B318B9D28F /* Pods-hero-ios_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -565,7 +558,6 @@
 		};
 		6003F5C4195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 84726D08AE85CF9A693D11F8 /* Pods-hero-ios_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (

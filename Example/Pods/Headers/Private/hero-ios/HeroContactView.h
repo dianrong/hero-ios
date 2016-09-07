@@ -1,0 +1,1 @@
+../../../../../hero-ios/Classes/HeroContactView.h
