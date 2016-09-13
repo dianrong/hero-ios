@@ -17,6 +17,7 @@
 #import "HeroBarButtonItem.h"
 #import "UIAlertView+blockDelegate.h"
 #import "HeroScrollView.h"
+#import "SBJson4.h"
 static bool customUserAgentHasSet = false;
 @interface HeroViewController()<UINavigationBarDelegate>
 @end
@@ -509,8 +510,10 @@ static bool customUserAgentHasSet = false;
             [[NSNotificationCenter defaultCenter] postNotificationName:key object:globle];
         }
     }else{  //specil logic
-//        NSString *js = [NSString stringWithFormat:@"API.in(%@)",[json JSONRepresentation]];
-//        [self.webview stringByEvaluatingJavaScriptFromString:js];
+        SBJson4Writer *jsonWriter = [[SBJson4Writer alloc] init];
+        NSString *jsonStr = [jsonWriter stringWithObject:json];
+        NSString *js = [NSString stringWithFormat:@"API.in(%@)",jsonStr];
+        [self.webview stringByEvaluatingJavaScriptFromString:js];
     }
 }
 -(void)loadFromUrl:(NSString*)url{
