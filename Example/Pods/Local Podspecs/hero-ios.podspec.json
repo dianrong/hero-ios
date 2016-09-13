@@ -1,9 +1,9 @@
 {
   "name": "hero-ios",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "summary": "A short description of hero-ios.",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/<GITHUB_USERNAME>/hero-ios",
+  "homepage": "http://www.hero-mobile.com",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,9 +12,10 @@
     "刘国平": "guoping.liu@dianrong.com"
   },
   "source": {
-    "git": "https://github.com/<GITHUB_USERNAME>/hero-ios.git",
-    "tag": "0.1.0"
+    "git": "https://code.dianrong.com/scm/mf/hero-ios.git",
+    "tag": "0.0.2"
   },
+  "social_media_url": "http://www.hero-mobile.com",
   "platforms": {
     "ios": "7.0"
   },

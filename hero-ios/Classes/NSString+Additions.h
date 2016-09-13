@@ -47,4 +47,7 @@
 
 - (NSString *)getCodeByNumberString;
 
+- (NSString *)encodeToPercentEscapeString;
+- (NSString *)decodeFromPercentEscapeString;
+
 @end

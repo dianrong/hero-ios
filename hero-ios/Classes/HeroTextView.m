@@ -1,7 +1,6 @@
 
 
 #import "HeroTextView.h"
-//#import "NSString+SBJSON.h"
 @interface HeroTextView()
 @end
 
