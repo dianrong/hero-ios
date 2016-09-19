@@ -8,6 +8,7 @@
 
 #import "HeroViewController.h"
 #import "UIView+paper.h"
+#import "HeroTextField.h"
 @interface HeroViewController1 ()
 
 @end
@@ -17,11 +18,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(100, 100, 100, 100)];
-    view.backgroundColor = [UIColor grayColor];
-    view.layer.cornerRadius = 50;
+    HeroTextField *view = [[HeroTextField alloc]initWithFrame:CGRectMake(100, 100, 100, 40)];
+    view.backgroundColor = [UIColor whiteColor];
+    view.layer.cornerRadius = 10;
     [self.view addSubview:view];
     view.rippleExpanding = YES;
+    [view performSelector:@selector(on:) withObject: @{@"dashBorder":@{@"color":@"ff0000",@"pattern":@[@2,@4]}}];
 
 }
 

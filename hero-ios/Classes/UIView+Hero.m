@@ -152,6 +152,71 @@ static void *s_controller = &s_controller;
             }
         }
     }
+    if (json[@"dashBorder"]) {
+        NSDictionary *dash = json[@"dashBorder"];
+        NSString *color = dash[@"color"];
+        NSArray *pattern = dash[@"pattern"];
+        UIBezierPath *path = nil;
+        if (dash[@"left"]) {
+            CAShapeLayer *dashedborder = [CAShapeLayer layer];
+            dashedborder.strokeColor = UIColorFromStr(color).CGColor;
+            dashedborder.fillColor = nil;
+            dashedborder.lineDashPattern = pattern;
+            UIBezierPath *path = nil;
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(0, 0)];
+            [path addLineToPoint:CGPointMake(0, self.bounds.size.height)];
+            dashedborder.path = path.CGPath;
+            [self.layer addSublayer:dashedborder];
+        }
+        if (dash[@"right"]) {
+            CAShapeLayer *dashedborder = [CAShapeLayer layer];
+            dashedborder.strokeColor = UIColorFromStr(color).CGColor;
+            dashedborder.fillColor = nil;
+            dashedborder.lineDashPattern = pattern;
+            UIBezierPath *path = nil;
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(self.bounds.size.width, 0)];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width, self.bounds.size.height)];
+            dashedborder.path = path.CGPath;
+            [self.layer addSublayer:dashedborder];
+        }
+        if (dash[@"bottom"]) {
+            CAShapeLayer *dashedborder = [CAShapeLayer layer];
+            dashedborder.strokeColor = UIColorFromStr(color).CGColor;
+            dashedborder.fillColor = nil;
+            dashedborder.lineDashPattern = pattern;
+            UIBezierPath *path = nil;
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(0, self.bounds.size.height)];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width, self.bounds.size.height)];
+            dashedborder.path = path.CGPath;
+            [self.layer addSublayer:dashedborder];
+        }
+        if (dash[@"top"]) {
+            CAShapeLayer *dashedborder = [CAShapeLayer layer];
+            dashedborder.strokeColor = UIColorFromStr(color).CGColor;
+            dashedborder.fillColor = nil;
+            dashedborder.lineDashPattern = pattern;
+            UIBezierPath *path = nil;
+            path = [UIBezierPath bezierPath];
+            [path moveToPoint:CGPointMake(0, 0)];
+            [path addLineToPoint:CGPointMake(self.bounds.size.width, 0)];
+            dashedborder.path = path.CGPath;
+            [self.layer addSublayer:dashedborder];
+        }
+        if (!(dash[@"right"] || dash[@"left"] || dash[@"top"] || dash[@"bottom"])) {
+            CAShapeLayer *dashedborder = [CAShapeLayer layer];
+            dashedborder.strokeColor = UIColorFromStr(color).CGColor;
+            dashedborder.fillColor = nil;
+            dashedborder.lineDashPattern = pattern;
+            path = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.layer.cornerRadius];
+            [self.layer addSublayer:dashedborder];
+            dashedborder.frame = self.bounds;
+            dashedborder.path = path.CGPath;
+            [self.layer addSublayer:dashedborder];
+        }
+    }
     if (json[@"shadowColor"]) {
         //暂时只支持默认的shadow，使用shadow应该比较小心避免造成性能问题。／／推荐使用图片代替
         self.layer.shadowColor = UIColorFromStr(json[@"shadowColor"]).CGColor;
