@@ -5,16 +5,21 @@
 
 static void *s_ripple = &s_ripple;
 static void *s_raised = &s_raised;
+static void *s_rippleExpanding = &s_rippleExpanding;
 
 @implementation UIView (Paper)
 @dynamic raised;
 @dynamic ripple;
+@dynamic rippleExpanding;
 
 -(BOOL)raised{
     return [objc_getAssociatedObject(self, s_raised) boolValue];
 }
 -(BOOL)ripple{
     return [objc_getAssociatedObject(self, s_ripple) boolValue];
+}
+-(BOOL)rippleExpanding{
+    return [objc_getAssociatedObject(self, s_rippleExpanding) boolValue];
 }
 -(void)setRaised:(BOOL)raised
 {
@@ -37,6 +42,32 @@ static void *s_raised = &s_raised;
         tap.cancelsTouchesInView = NO;
         tap.delaysTouchesEnded = YES;
         [self addGestureRecognizer:tap];
+    }
+}
+-(void)setRippleExpanding:(BOOL)rippleExpanding
+{
+    objc_setAssociatedObject(self, s_rippleExpanding,[NSNumber numberWithBool: rippleExpanding], OBJC_ASSOCIATION_ASSIGN);
+    if (rippleExpanding) {
+        [self startRippleExpanding];
+    }
+}
+-(void)startRippleExpanding{
+    if ([self rippleExpanding]) {
+        UIView *expandingView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
+        expandingView.center = self.center;
+        expandingView.alpha = 0.8f;
+        expandingView.backgroundColor = self.backgroundColor;
+        expandingView.layer.cornerRadius = self.layer.cornerRadius;
+        [self.superview insertSubview:expandingView belowSubview:self];
+        [UIView animateWithDuration:2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            expandingView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+            expandingView.alpha = 0.0;
+        } completion:^(BOOL finished) {
+            [expandingView removeFromSuperview];
+        }];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self startRippleExpanding];
+        });
     }
 }
 -(void)touchesBeganRipple:(UITapGestureRecognizer *)ges

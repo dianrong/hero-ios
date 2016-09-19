@@ -7,7 +7,7 @@
 //
 
 #import "HeroViewController.h"
-
+#import "UIView+paper.h"
 @interface HeroViewController1 ()
 
 @end
@@ -17,7 +17,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(100, 100, 100, 100)];
+    view.backgroundColor = [UIColor grayColor];
+    view.layer.cornerRadius = 50;
+    [self.view addSubview:view];
+    view.rippleExpanding = YES;
+
 }
 
 - (void)didReceiveMemoryWarning

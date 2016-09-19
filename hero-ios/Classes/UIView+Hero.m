@@ -157,10 +157,13 @@ static void *s_controller = &s_controller;
         self.layer.shadowColor = UIColorFromStr(json[@"shadowColor"]).CGColor;
     }
     if (json[@"ripple"]) {
-        self.ripple = YES;
+        self.ripple = ((NSNumber*)(json[@"ripple"])).boolValue;
     }
     if (json[@"raised"]) {
-        self.raised = YES;
+        self.raised = ((NSNumber*)(json[@"raised"])).boolValue;
+    }
+    if (json[@"rippleExpanding"]) {
+        self.rippleExpanding = ((NSNumber*)(json[@"rippleExpanding"])).boolValue;
     }
     if (json[@"enable"]) {
         self.userInteractionEnabled = ((NSNumber*)(json[@"enable"])).boolValue;
