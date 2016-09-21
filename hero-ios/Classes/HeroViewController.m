@@ -290,7 +290,19 @@ static bool customUserAgentHasSet = false;
                     }
                 }
                 else{
-                    vC = [[NSClassFromString(url) alloc]init];
+                    if ([url componentsSeparatedByString:@"?"].count > 1) {
+                        NSString *className = [url componentsSeparatedByString:@"?"][0];
+                        vC = [[NSClassFromString(className) alloc]init];
+                        NSString *parmStr = [url componentsSeparatedByString:@"?"][1];
+                        NSArray *parms = [parmStr componentsSeparatedByString:@"&"];
+                        NSMutableDictionary *json = [NSMutableDictionary dictionary];
+                        for (NSString *str in parms) {
+                            [json setValue:[str componentsSeparatedByString:@"="][1] forKey:[str componentsSeparatedByString:@"="][0]];
+                        }
+                        [vC performSelector:@selector(on:) withObject:json];
+                    }else{
+                        vC = [[NSClassFromString(url) alloc]init];
+                    }
                 }
                 [self.navigationController pushViewController:vC animated:YES];
             }else if([command hasPrefix:@"magicGoto"]){

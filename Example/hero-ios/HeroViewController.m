@@ -23,7 +23,7 @@
     view.layer.cornerRadius = 10;
     [self.view addSubview:view];
     view.rippleExpanding = YES;
-    [view performSelector:@selector(on:) withObject: @{@"dashBorder":@{@"color":@"ff0000",@"pattern":@[@2,@4]}}];
+    [view performSelector:@selector(on:) withObject: @{@"dashBorder":@{@"left":@TRUE,@"right":@TRUE,@"top":@TRUE,@"bottom":@TRUE,@"color":@"ff0000",@"pattern":@[@2,@4]}}];
 
 }
 
