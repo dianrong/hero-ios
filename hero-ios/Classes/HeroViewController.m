@@ -266,7 +266,7 @@ static bool customUserAgentHasSet = false;
                 NSString *url = [command stringByReplacingOccurrencesOfString:@"goto:" withString:@""];
                 NSURL *desUrl = [NSURL URLWithString:url];
                 UIViewController *vC;
-                if (desUrl) {
+                if (desUrl && desUrl.scheme) {
                     if ([desUrl.scheme isEqualToString:@"http"] || [desUrl.scheme isEqualToString:@"https"]) {
                         vC = [[[self class] alloc]initWithUrl:url];
                     }else{
