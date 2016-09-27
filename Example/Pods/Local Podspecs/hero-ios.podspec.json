@@ -1,6 +1,6 @@
 {
   "name": "hero-ios",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "summary": "A short description of hero-ios.",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "http://www.hero-mobile.com",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://code.dianrong.com/scm/mf/hero-ios.git",
-    "tag": "0.0.2"
+    "tag": "0.0.3"
   },
   "social_media_url": "http://www.hero-mobile.com",
   "platforms": {
@@ -23,9 +23,6 @@
   "public_header_files": "hero-ios/Classes/*.h",
   "dependencies": {
     "MJRefresh": [
-
-    ],
-    "SBJson": [
 
     ]
   }

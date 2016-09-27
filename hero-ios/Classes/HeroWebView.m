@@ -10,7 +10,7 @@
 #import "UIView+Hero.h"
 #import <JavaScriptCore/JSContext.h>
 #import "NSString+Additions.h"
-#import "SBJson4.h"
+
 @interface HeroWebView()<UIWebViewDelegate>
 
 @end
@@ -109,16 +109,12 @@
                 return false;
             }
 #endif
-            NSString *str = [request.URL.absoluteString stringByReplacingOccurrencesOfString:@"hero://" withString:@""];
-            str = [str decodeFromPercentEscapeString];
-            SBJson4ValueBlock block = ^(id v, BOOL *stop) {
-                [self.controller on:v];
-            };
-            SBJson4ErrorBlock eh = ^(NSError* err) {
-                NSLog(@"OOPS: %@", err);
-            };
-            id parser = [SBJson4Parser multiRootParserWithBlock:block errorHandler:eh];
-            [parser parse:[str dataUsingEncoding:NSUTF8StringEncoding]];
+            NSString* str = [webView stringByEvaluatingJavaScriptFromString:
+                                            @"API.outObjects()"];
+            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[str dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+            if (json != nil) {
+                [self.controller on:json];
+            }
         }else{
             NSMutableDictionary *params = [NSMutableDictionary dictionary];
             NSString *query = [[request URL] query];
