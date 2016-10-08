@@ -25,7 +25,7 @@
     NSMutableData *_responseData;
     UIView *shadowView;
     DACircularProgressView *progressView;
-    NSString *sessionId;
+    NSDictionary *headers;
     NSString *uploadName;
     id readyObject;
     id deleteObject;
@@ -85,16 +85,9 @@
         }
     }
     if (json[@"JSESSIONID"]) {
-        //        sessionId = json[@"JSESSIONID"];
-        //        NSDictionary *cookieProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-        //                                          @"JSESSIONID", NSHTTPCookieName,
-        //                                          sessionId, NSHTTPCookieValue,
-        //                                          @"www-dev.dianrong.com", NSHTTPCookieDomain,
-        //                                          @"/", NSHTTPCookiePath,
-        //                                          nil];
-        //        NSHTTPCookie *cookie = [[NSHTTPCookie alloc] initWithProperties:cookieProperties];
-        //        DLog(@"cookie: %@", cookie);
-        //        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+    }
+    if (json[@"headers"]) {
+        headers = json[@"headers"];
     }
     if (json[@"uploadName"]) {
         uploadName = json[@"uploadName"];
@@ -330,6 +323,11 @@
 -(BOOL) setParams{
     if(pngData != nil){
         request = [NSMutableURLRequest new];
+        if (headers) {
+            for (NSString *key in headers.allKeys) {
+                [request setValue:headers[key] forHTTPHeaderField:key];
+            }
+        }
         request.timeoutInterval = 20.0;
         [request setURL:[NSURL URLWithString:uploadUrl]];
         [request setHTTPMethod:@"POST"];
@@ -375,7 +373,17 @@
         NSError *err;
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:_responseData options:NSJSONReadingMutableContainers error:&err];
         if (json) {
-            if ([@"success" isEqualToString:json[@"result"]]) {
+            if(json[@"data"][@"download_url"]){
+                DLog(@"upload success: %@", json[@"data"][@"download_url"]);
+                [self onShadowViewTapped];
+                emptyLabel.text = nil;
+                emptyLabel.hidden = YES;
+                [self on:@{@"image":json[@"data"][@"download_url"]}];
+                [self localImageReady:YES];
+                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:readyObject];
+                [dict setObject:json[@"data"][@"download_url"] forKey:@"url"];
+                [self.controller on:dict];
+            }else if ([@"success" isEqualToString:json[@"result"]]) {
                 DLog(@"upload success: %@", json);
                 [UIImageJPEGRepresentation(selectedImage, 0.3) writeToFile:savePath atomically:YES];
                 emptyLabel.text = nil;

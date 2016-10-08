@@ -10,6 +10,7 @@
 //#import "UIScrollView+MJRefresh.h"
 //#import "MJRefresh.h"
 @interface HeroScrollView() <UIScrollViewDelegate>
+@property (nonatomic,strong)NSMutableArray *fixViews;
 @end
 @implementation HeroScrollView
 
@@ -17,6 +18,7 @@
 {
     [super on:json];
     self.delegate = self;
+    
     if (json[@"contentSize"]) {
         NSString *x = json[@"contentSize"][@"x"];
         NSString *y = json[@"contentSize"][@"y"];
@@ -70,26 +72,52 @@
 //            });
 //        }
 //    }
+    
 }
 -(void)addSubview:(UIView *)view{
     [super addSubview:view];
     if (view.frame.size.height+view.frame.origin.y + self.contentInset.top > self.bounds.size.height) {
-        self.contentSize = CGSizeMake(0, view.frame.size.height+view.frame.origin.y);
+        self.contentSize = CGSizeMake(self.contentSize.width, view.frame.size.height+view.frame.origin.y);
     }
-}
--(void)setFixHeaderView:(UIView *)fixHeaderView{
-    _fixHeaderView = fixHeaderView;
-    _fixHeaderView.frame = CGRectMake(0,-self.contentInset.top, self.bounds.size.width, 64);
-    [self addSubview:fixHeaderView];
+    if ([view.name hasPrefix:@"scroll_fix"]) {
+        if ([view.name hasPrefix:@"scroll_fix_header"]) {
+            self.contentInset = UIEdgeInsetsMake(view.bounds.size.height, 0, 0, 0);
+        }
+        if (!_fixViews) {
+            self.fixViews = [NSMutableArray array];
+        }
+        if (view.json[@"extend"]) {
+            [self.fixViews addObject:@{@"view":view,@"extend":view.json[@"extend"],@"frame":[NSValue valueWithCGRect:view.frame]}];
+        }else{
+            [self.fixViews addObject:@{@"view":view,@"frame":[NSValue valueWithCGRect:view.frame]}];
+        }
+    }
+    
 }
 #pragma mark scrollview delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     [self endEditing:YES];
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    if (self.fixHeaderView) {
-        self.fixHeaderView.frame = CGRectMake(0, scrollView.contentOffset.y, scrollView.bounds.size.width, 64);
-        [self bringSubviewToFront:self.fixHeaderView];
+    if (self.fixViews) {
+        for (NSDictionary *fixView in self.fixViews) {
+            UIView *v = fixView[@"view"];
+            float extendLeft = [fixView[@"extend"][@"l"] floatValue];
+            float extendTop = [fixView[@"extend"][@"t"] floatValue];
+            float extendRight = [fixView[@"extend"][@"r"] floatValue];
+            float extendBottom = [fixView[@"extend"][@"b"] floatValue];
+            CGRect frame = [fixView[@"frame"] CGRectValue];
+            CGPoint move = CGPointMake(scrollView.contentOffset.x+scrollView.contentInset.left, scrollView.contentOffset.y+scrollView.contentInset.top);
+
+            float newX = frame.origin.x+move.x-(move.x>0&&extendLeft>0?MIN(move.x,extendLeft):0)-(move.x<0&&extendLeft<0?MAX(move.x,extendLeft):0);
+            float newY = frame.origin.y+move.y-(move.y>0&&extendTop>0?MIN(move.y,extendTop):0)-(move.y<0&&extendTop<0?MAX(move.y,extendTop):0);
+            float newR = (frame.origin.x+frame.size.width)+move.x-(move.x>0&&extendRight<0?MIN(move.x,-extendRight):0)+(move.x<0&&extendRight>0?MIN(-move.x,extendRight):0);
+            float newB = (frame.origin.y+frame.size.height)+move.y-(move.y>0&&extendBottom<0?MIN(move.y,-extendBottom):0)+(move.y<0&&extendBottom>0?MIN(-move.y,extendBottom):0);
+
+            CGRect newFrame = CGRectMake(newX,newY,newR-newX,newB-newY);
+            v.frame = newFrame;
+            [self bringSubviewToFront:v];
+        }
     }
 }
  -(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView

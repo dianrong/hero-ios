@@ -9,5 +9,4 @@
 #import <UIKit/UIKit.h>
 #import "UIView+Hero.h"
 @interface HeroScrollView : UIScrollView
-@property (nonatomic,strong)UIView *fixHeaderView;
 @end

@@ -110,6 +110,10 @@ static bool customUserAgentHasSet = false;
         {
             [v removeFromSuperview];
         }
+        if (ui[@"nav"]) {
+            [self on:@{@"appearance":ui[@"nav"]}];
+        }
+        ((HeroScrollView*)self.view).contentOffset = CGPointMake(0, -((HeroScrollView*)self.view).contentInset.top);
         self.ui = ui;
         NSArray *views = ui[@"views"];
         for (NSDictionary *element in views) {
@@ -128,12 +132,15 @@ static bool customUserAgentHasSet = false;
             [(p?p:self.view) addSubview:v];
             v.controller = self;
             [v on:element];
+            if ([v.name hasPrefix:@"scroll_fix"]) {
+                [self.view addSubview:v];
+            }
             if (_isMagicMove) {
                 v.alpha = 0.0f;
             }
-            if (v.frame.origin.y + v.frame.size.height > self.view.bounds.size.height) {
+            if (v.frame.origin.y + v.frame.size.height > self.view.bounds.size.height-((UIScrollView*)self.view).contentInset.top-((UIScrollView*)self.view).contentInset.bottom) {
                 ((UIScrollView*)self.view).scrollEnabled = true;
-                ((UIScrollView*)self.view).contentSize = CGSizeMake(0, v.frame.origin.y + v.frame.size.height);
+                ((UIScrollView*)self.view).contentSize = CGSizeMake(((UIScrollView*)self.view).contentSize.width, v.frame.origin.y + v.frame.size.height);
             }
         }
         if (ui[@"backgroundColor"]) {
@@ -141,56 +148,12 @@ static bool customUserAgentHasSet = false;
         }
         if (ui[@"tintColor"]) {
             if (self.navigationController.navigationBar.translucent) {
-                UIView *backgroundView = [[UIView alloc]init];
-                backgroundView.backgroundColor = UIColorFromStr(ui[@"tintColor"]);
-                ((HeroScrollView*)self.view).fixHeaderView = backgroundView;
+                UIView *bar = [[UIView alloc]init];
+                [bar on: [NSMutableDictionary dictionaryWithDictionary: @{@"class":@"UIView",@"name":@"scroll_fix_header",@"extend":@{@"y":@40},@"frame":@{@"y":@"-64",@"w":@"1x",@"h":@"64"},@"backgroundColor":ui[@"tintColor"]}]];
+                [self.view addSubview:bar];
             }else{
                 [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor clearColor]]];
                 [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:UIColorFromStr(ui[@"tintColor"])] forBarMetrics:UIBarMetricsDefault];
-            }
-        }
-        if (ui[@"nav"][@"title"]) {
-            self.title = ui[@"nav"][@"title"];
-            if (self.tabBarController) {
-                self.tabBarController.navigationItem.title = self.title;
-            }
-        }
-        if (ui[@"nav"][@"titleView"]) {
-            NSDictionary *element = ui[@"nav"][@"titleView"];
-            UIView *v = [[NSClassFromString(element[@"class"]) alloc]init];
-            v.controller = self;
-            [v on:element];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self.navigationItem setTitleView:v];
-                if (self.tabBarController) {
-                    self.tabBarController.navigationItem.titleView = v;
-                }
-            });
-        }
-        if (ui[@"nav"][@"rightItems"]) {
-            NSArray *items = ui[@"nav"][@"rightItems"];
-            NSMutableArray *rightItems = [NSMutableArray array];
-            for (NSDictionary *item in items) {
-                HeroBarButtonItem *buttonItem = [[HeroBarButtonItem alloc]initWithJson:item];
-                buttonItem.controller = self;
-                [rightItems addObject:buttonItem];
-            }
-            self.navigationItem.rightBarButtonItems = rightItems;
-            if (self.tabBarController) {
-                self.tabBarController.navigationItem.rightBarButtonItems = rightItems;
-            }
-        }
-        if (ui[@"nav"][@"leftItems"]) {
-            NSArray *items = ui[@"nav"][@"leftItems"];
-            NSMutableArray *leftItems = [NSMutableArray array];
-            for (NSDictionary *item in items) {
-                HeroBarButtonItem *buttonItem = [[HeroBarButtonItem alloc]initWithJson:item];
-                buttonItem.controller = self;
-                [leftItems addObject:buttonItem];
-            }
-            self.navigationItem.leftBarButtonItems = leftItems;
-            if (self.tabBarController) {
-                self.tabBarController.navigationItem.leftBarButtonItems = leftItems;
             }
         }
     }
@@ -218,6 +181,18 @@ static bool customUserAgentHasSet = false;
         if (appearance[@"title"]) {
             self.title = appearance[@"title"];
             self.tabBarController.title = self.title;
+        }
+        if (appearance[@"titleView"]) {
+            NSDictionary *element = appearance[@"titleView"];
+            UIView *v = [[NSClassFromString(element[@"class"]) alloc]init];
+            v.controller = self;
+            [v on:element];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.navigationItem setTitleView:v];
+                if (self.tabBarController) {
+                    self.tabBarController.navigationItem.titleView = v;
+                }
+            });
         }
         if (appearance[@"leftItems"]) {
             NSArray *items = appearance[@"leftItems"];
@@ -327,9 +302,10 @@ static bool customUserAgentHasSet = false;
                 [self.navigationController popToRootViewControllerAnimated:YES];
             }else if ([command hasPrefix:@"present:"]){
                 NSString *url = [command stringByReplacingOccurrencesOfString:@"present:" withString:@""];
-                UIViewController *vC;
+                HeroViewController *vC;
                 if ([url hasPrefix:@"http"]) {
                     vC = [[[self class] alloc]initWithUrl:url];
+                    [vC on:@{@"appearance":@{@"leftItems":@[@{@"title":LS(@"取消"),@"click":@{@"command":@"dismiss"}}]}}];
                 }else{
                     vC = [[NSClassFromString(url) alloc]init];
                 }
