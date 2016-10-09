@@ -97,6 +97,15 @@
                     attributeFont = _font;
                 }
                 [attributeStr addAttribute:NSFontAttributeName value:_font range:range];
+            }else if([key hasPrefix:@"middleline("]){
+                NSString *rangeStr = [key stringByReplacingOccurrencesOfString:@"middleline(" withString:@""];
+                rangeStr = [rangeStr stringByReplacingOccurrencesOfString:@")" withString:@""];
+                NSRange range = NSMakeRange([[rangeStr componentsSeparatedByString:@","][0] integerValue], [[rangeStr componentsSeparatedByString:@","][1] integerValue]);
+                UIFont *_font = [UIFont systemFontOfSize:[attribute[key] intValue]];
+                if (!attributeFont || attributeFont.pointSize<_font.pointSize) {
+                    attributeFont = _font;
+                }
+                [attributeStr addAttributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]} range:range];
             }else if([key hasPrefix:@"gap"]){
                 style.lineSpacing = [attribute[key] intValue];
                 style.minimumLineHeight =  (int)attributeFont.lineHeight+1; //line height equals to image height
