@@ -28,8 +28,10 @@
 #define UIColorFromRGB(rgbValue) ([UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:(1-((float)((rgbValue & 0xFF000000) >> 24))/255.0)])
 
 #define AppVersion() [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"]
-#define IOS7_OR_LATER           ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending )
-#define IOS8_OR_LATER           ([[[UIDevice currentDevice] systemVersion] compare:@"8.0"] != NSOrderedAscending )
+#define IOS7_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0f)
+#define IOS8_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f)
+#define IOS9_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0f)
+#define IOS10_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0f)
 #define IS_IPAD                 ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
 #ifdef DEBUG

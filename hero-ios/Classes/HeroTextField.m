@@ -86,6 +86,16 @@
         self.placeholder = json[@"placeHolder"];
         self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder attributes:@{NSForegroundColorAttributeName: UIColorFromStr(@"cccccc")}];
     }
+    if (json[@"alignment"]) {
+        NSString *alignment = json[@"alignment"];
+        if ([alignment isEqualToString:@"center"]) {
+            self.textAlignment = NSTextAlignmentCenter;
+        }else if ([alignment isEqualToString:@"left"]){
+            self.textAlignment = NSTextAlignmentLeft;
+        }else if ([alignment isEqualToString:@"right"]){
+            self.textAlignment = NSTextAlignmentRight;
+        }
+    }
     if (json[@"type"]) {
         NSString *type = json[@"type"];
         if ([@"number" isEqualToString:type]) {
