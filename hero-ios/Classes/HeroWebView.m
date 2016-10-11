@@ -109,8 +109,14 @@
                 return false;
             }
 #endif
-            NSString* str = [webView stringByEvaluatingJavaScriptFromString:
-                                            @"API.outObjects()"];
+            NSString* str;
+            if ([request.URL.absoluteString hasSuffix:@"ready"]) {
+                str = [webView stringByEvaluatingJavaScriptFromString:
+                       @"API.outObjects()"];
+            }else{
+                str = [request.URL.absoluteString stringByReplacingOccurrencesOfString:@"hero://" withString:@""];
+                str = [str decodeFromPercentEscapeString];
+            }
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[str dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
             if (json != nil) {
                 [self.controller on:json];

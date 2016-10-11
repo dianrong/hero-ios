@@ -9,6 +9,7 @@
 #import "HeroImageView.h"
 #import "UILazyImageView.h"
 #import "DACircularProgressView.h"
+#import <ImageIO/ImageIO.h>
 
 @interface HeroImageView ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate, NSURLConnectionDataDelegate,UIScrollViewDelegate>
 
@@ -33,6 +34,14 @@
     UIImageView *bigImageView;
     UIButton *deleteBtn;
     BOOL allowsEditing;
+    
+    //gif
+    CGImageSourceRef gif;
+    NSDictionary *gifProperties;
+    size_t index;
+    size_t count;
+    NSTimer *timer;
+
 }
 
 - (instancetype)init {
@@ -81,7 +90,24 @@
                 }];
             }];
         } else{
-            self.image = [UIImage imageNamed:imageStr];
+            UIImage *image = [UIImage imageNamed:imageStr];
+            if (image) {
+                self.image = image;
+            }else{
+                NSURL *gifURL = [[NSBundle mainBundle]URLForResource:imageStr withExtension:@"gif"];
+                if (gifURL) {
+                    NSData *_data = [NSData dataWithContentsOfURL:gifURL];
+                    gifProperties = [NSDictionary dictionaryWithObject:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:0] forKey:(NSString *)kCGImagePropertyGIFLoopCount]
+                                                                              forKey:(NSString *)kCGImagePropertyGIFDictionary];
+                    gif = CGImageSourceCreateWithData((CFDataRef)_data, (CFDictionaryRef)gifProperties);
+                    count =CGImageSourceGetCount(gif);
+                    NSDictionary *dict = (NSDictionary*)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(gif, 0, NULL));
+                    NSDictionary *gifDict = [dict valueForKey:(NSString*)kCGImagePropertyGIFDictionary];
+                    float dealy = [[gifDict valueForKey:(NSString*)kCGImagePropertyGIFDelayTime] floatValue];
+                    timer = [NSTimer scheduledTimerWithTimeInterval:dealy target:self selector:@selector(gifPlay) userInfo:nil repeats:YES];
+                    [timer fire];
+                }
+            }
         }
     }
     if (json[@"JSESSIONID"]) {
@@ -438,6 +464,29 @@
             [dict setObject:@(ok) forKey:@"value"];
             [self.controller on:dict];
         });
+    }
+}
+
+#pragma mark gif
+-(void)gifPlay
+{
+    index ++;
+    index = index%count;
+    CGImageRef ref = CGImageSourceCreateImageAtIndex(gif, index, (CFDictionaryRef)gifProperties);
+    self.layer.contents = (__bridge id)ref;
+    CFRelease(ref);
+}
+-(void)removeFromSuperview
+{
+    if (timer) {
+        [timer invalidate];
+        timer = nil;
+    }
+    [super removeFromSuperview];
+}
+- (void)dealloc {
+    if (gif) {
+        CFRelease(gif);
     }
 }
 
