@@ -149,7 +149,7 @@ static bool customUserAgentHasSet = false;
         if (ui[@"tintColor"]) {
             if (self.navigationController.navigationBar.translucent) {
                 UIView *bar = [[UIView alloc]init];
-                [bar on: [NSMutableDictionary dictionaryWithDictionary: @{@"class":@"UIView",@"name":@"scroll_fix_header",@"extend":@{@"y":@40},@"frame":@{@"y":@"-64",@"w":@"1x",@"h":@"64"},@"backgroundColor":ui[@"tintColor"]}]];
+                [bar on: [NSMutableDictionary dictionaryWithDictionary: @{@"class":@"UIView",@"name":@"scroll_fix_header",@"frame":@{@"y":@"-64",@"w":@"1x",@"h":@"64"},@"backgroundColor":ui[@"tintColor"]}]];
                 [self.view addSubview:bar];
             }else{
                 [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor clearColor]]];
@@ -218,6 +218,13 @@ static bool customUserAgentHasSet = false;
         }
         if (appearance[@"navigationBarHidden"]) {
             _isNavBarHidden = [appearance[@"navigationBarHidden"] boolValue];
+            if (self.navigationController.navigationBar.translucent) {
+                if (_isNavBarHidden) {
+                    ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                }else{
+                    ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+                }
+            }
             [self.navigationController setNavigationBarHidden:_isNavBarHidden];
         }
         if (appearance[@"navigationBarTranslucent"]) {
