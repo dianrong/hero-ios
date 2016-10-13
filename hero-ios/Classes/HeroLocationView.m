@@ -81,7 +81,7 @@
 }
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:self.json[@"fetch_coordinate"]];
+    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:_fetch_coordinate];
     [fetch_coordinate setValue:@"err" forKey:@"location"];
     [self.controller on:fetch_coordinate];
     switch ([error code])

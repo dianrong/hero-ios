@@ -41,7 +41,7 @@
         if ([y hasSuffix:@"x"]) {
             point.y = SCREEN_H*x.floatValue;
         }
-        self.contentOffset = CGPointMake(x.floatValue, y.floatValue);
+        self.contentOffset = CGPointMake(MIN(x.floatValue,MAX(0,self.contentSize.width-self.bounds.size.width)), MIN(y.floatValue,MAX(0,self.contentSize.height-self.bounds.size.height)));
     }
 //    if (json[@"pullRefresh"]) {
 //        if (self.contentSize.height < self.bounds.size.height) {
