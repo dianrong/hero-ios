@@ -8,6 +8,7 @@
 
 #import "HeroDevice.h"
 #include <sys/sysctl.h>
+#import <AdSupport/AdSupport.h>
 
 @implementation HeroDevice
 
@@ -41,6 +42,10 @@
                 deviceToken = @"";
             }
             NSDictionary *dict = @{@"UMDeviceToken":@{@"value":deviceToken}};
+            [self.controller on:dict];
+        }
+        if (getInfo[@"deviceId"]) {
+            NSDictionary *dict = @{@"deviceId":@{@"value":@{@"idfa":[self idfaString],@"idfv":[self idfvString],}}};
             [self.controller on:dict];
         }
     }
@@ -99,6 +104,29 @@
     if ([platform isEqualToString:@"i386"])         return @"Simulator";
     if ([platform isEqualToString:@"x86_64"])       return @"Simulator";
     return platform;
+}
+
+-(NSString *)idfaString {
+    NSBundle *adSupportBundle = [NSBundle bundleWithPath:@"/System/Library/Frameworks/AdSupport.framework"];
+    [adSupportBundle load];
+
+    if (adSupportBundle == nil) {
+        return @"";
+    }
+
+    Class asIdentifierMClass = NSClassFromString(@"ASIdentifierManager");
+    ASIdentifierManager *asIM = [[asIdentifierMClass alloc] init];
+    if (asIM.advertisingTrackingEnabled) {
+        return [asIM.advertisingIdentifier UUIDString];
+    }
+    return @"";
+}
+
+- (NSString *)idfvString {
+    if ([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)]) {
+        return [[UIDevice currentDevice].identifierForVendor UUIDString];
+    }
+    return @"";
 }
 
 @end
