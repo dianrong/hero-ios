@@ -77,6 +77,7 @@
         [fetch_coordinate setValue:@(location.coordinate.latitude) forKey:@"la"];
         [fetch_coordinate setValue:@(location.coordinate.longitude) forKey:@"lo"];
         [self.controller on:fetch_coordinate];
+        [lm stopUpdatingLocation];
     }
 }
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
