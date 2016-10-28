@@ -19,6 +19,8 @@
     UILabel *_ownnerLabel;
     NSString *_urlStr;
 }
+
+
 -(void)on:(NSDictionary *)json
 {
     [super on:json];
@@ -34,7 +36,13 @@
         }
 #endif
         NSURL *url = [NSURL URLWithString:_urlStr];
-        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
+            NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
+            for (NSString *key in [dic allKeys]) {
+                [request setValue:dic[key] forHTTPHeaderField:key];
+            }
+        }
         [self loadRequest:request];
         if ([request.URL.absoluteString componentsSeparatedByString:kBaseurl].count<2) {
             if (!_ownnerLabel) {
@@ -100,6 +108,9 @@
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
     if ([request.URL.absoluteString hasPrefix:@"http"] || [request.URL.absoluteString hasPrefix:@"file"]) {
+        if ([request.URL.absoluteString isEqualToString:@"https://cashloan-callback.dianrong.com/"]) {
+            [self.controller on:@{@"command":@"back"}];
+        }
         return YES;
     }else{
         if ([request.URL.absoluteString hasPrefix:@"hero://"]) {

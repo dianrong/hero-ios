@@ -33,7 +33,12 @@
         _uploadRequest.timeoutInterval = 20.0;
         [_uploadRequest setURL:_uploadUrl];
         [_uploadRequest setHTTPMethod:@"POST"];
-
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
+            NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
+            for (NSString *key in [dic allKeys]) {
+                [_uploadRequest setValue:dic[key] forHTTPHeaderField:key];
+            }
+        }
         NSString *fileNameWithExt = [NSString stringWithFormat:@"%@_%@.jpg", _uploadName, [NSNumber numberWithUnsignedInteger:[self hash]]];
 
         NSString *boundary = @"---------------------------14737809831466499882746641449";

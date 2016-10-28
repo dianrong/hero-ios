@@ -252,7 +252,17 @@ static NSString * cacheFolder;
             imageDownloadQuene = [[NSOperationQueue alloc]init];
             [imageDownloadQuene setMaxConcurrentOperationCount:4];
         }
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:url] queue:imageDownloadQuene completionHandler:^(NSURLResponse *r, NSData *d, NSError *e) {
+        NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
+            NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
+            for (NSString *key in [dic allKeys]) {
+                [req setValue:dic[key] forHTTPHeaderField:key];
+            }
+        }
+        NSURLSession *session = [NSURLSession sharedSession];
+        req.timeoutInterval = 30.0;
+        
+        [[session dataTaskWithRequest:req completionHandler:^(NSData * _Nullable d, NSURLResponse * _Nullable response, NSError * _Nullable e) {
             if (d &&(!e)) {
                 if (d.length > 100)
                 {
@@ -289,8 +299,8 @@ static NSString * cacheFolder;
                     });
                 }
             }
-        }];
-
+        }] resume];
+        
     }
     else
     {

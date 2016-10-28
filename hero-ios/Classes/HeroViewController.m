@@ -353,12 +353,18 @@ static bool customUserAgentHasSet = false;
                 NSString *fileKey = nil;
                 
                 NSDictionary *headers = @{ @"referer": @"https://www.dianrong.com" };
-                
+
                 NSURLSession *session = [NSURLSession sharedSession];
                 NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
                 request.timeoutInterval = 20.0;
                 [request setURL:[NSURL URLWithString:url]];
                 [request setAllHTTPHeaderFields:headers];
+                if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
+                    NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
+                    for (NSString *key in [dic allKeys]) {
+                        [request setValue:dic[key] forHTTPHeaderField:key];
+                    }
+                }
                 [request setHTTPMethod:@"POST"];
                 NSString *boundary = @"---------------------------14737809831466499882746641449";
                 NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];

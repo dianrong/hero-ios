@@ -66,6 +66,18 @@
     if (json[@"height"]) {
         self.rowHeight = ((NSNumber*)json[@"height"]).floatValue;
     }
+    if (json[@"contentOffset"]) {
+        NSString *x = json[@"contentOffset"][@"x"];
+        NSString *y = json[@"contentOffset"][@"y"];
+        CGPoint point = CGPointMake(x.floatValue, y.floatValue);
+        if ([x hasSuffix:@"x"]) {
+            point.x = SCREEN_W*x.floatValue;
+        }
+        if ([y hasSuffix:@"x"]) {
+            point.y = SCREEN_H*x.floatValue;
+        }
+        self.contentOffset = CGPointMake(MIN(x.floatValue,MAX(0,self.contentSize.width-self.bounds.size.width)), MIN(y.floatValue,MAX(0,self.contentSize.height-self.bounds.size.height)));
+    }
 //    if (json[@"pullRefresh"]) {
 //        NSDictionary *pull = json[@"pullRefresh"];
 //        NSString *idle = pull[@"idle"]?pull[@"idle"]:LS(@"下拉刷新");

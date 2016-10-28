@@ -61,6 +61,37 @@ static inline UIColor* UIColorFromStr(NSString *str){
     [scanner scanHexLongLong: &longValue];
     return UIColorFromRGB(longValue);
 }
-
+static NSMutableDictionary *loadedCSS;
+static inline NSString *StrFromCSS(NSString *bundle,NSString *name,NSString *type,NSString *key,NSString *defaultStr){
+    if (!loadedCSS) {
+        loadedCSS = [NSMutableDictionary dictionary];
+    }
+    if (bundle && (name || type)) {
+        if (!loadedCSS[bundle]) {
+            NSString *cssFile = [NSString stringWithFormat:@"%@/document/css/%@.json",NSHomeDirectory(),bundle];
+            NSData *cssData = [NSData dataWithContentsOfFile:cssFile];
+            if (!cssData) {
+                cssFile = [[NSBundle mainBundle] pathForResource:bundle ofType:@"json"];
+                cssData = [NSData dataWithContentsOfFile:cssFile];
+            }
+            if (cssData) {
+                NSDictionary *css = [NSJSONSerialization JSONObjectWithData:cssData options:NSJSONReadingMutableContainers error:nil];
+                [loadedCSS setObject:css forKey:bundle];
+            }
+        }
+        NSDictionary *css = loadedCSS[bundle];
+        NSString *cssValue;
+        if (type && css[type]) {
+            cssValue = css[type][key];
+        }
+        if (name && css[name]) {
+            cssValue = css[name][key];
+        }
+        if (cssValue) {
+            return cssValue;
+        }
+    }
+    return defaultStr;
+}
 
 
