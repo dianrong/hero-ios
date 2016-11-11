@@ -17,6 +17,12 @@
                 [((HeroViewController*)self.topViewController).webview goBack];
                 return NO;
             }
+            for (UIWebView *v in ((HeroViewController*)self.topViewController).view.subviews) {
+                if ([v isKindOfClass:[UIWebView class]] && v.canGoBack) {
+                    [v goBack];
+                    return NO;
+                }
+            }
         }
     }
     return [self navigationBarWithWeb:navigationBar shouldPopItem:item] ;
