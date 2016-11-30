@@ -8,6 +8,7 @@
 
 #import "HeroLocationView.h"
 #import <MapKit/MapKit.h>
+#import "UIAlertView+blockDelegate.h"
 #import <LocalAuthentication/LocalAuthentication.h>
 
 @interface HeroLocationView()<CLLocationManagerDelegate>
@@ -17,9 +18,15 @@
 {
     CLLocationManager *lm;
     NSDictionary *_fetch_coordinate;
+    BOOL _leadUsrToSetting;
 }
 -(void)on:(NSDictionary *)json{
     [super on:json];
+    if (json[@"leadUsrToSetting"]) {
+        if (IOS8_OR_LATER) {
+            _leadUsrToSetting = [json[@"leadUsrToSetting"] boolValue];
+        }
+    }
     if (json[@"coordinate"]) {
         if (!json[@"hidden"]) {
             self.hidden = false;
@@ -48,21 +55,33 @@
             CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
             if (authorizationStatus == kCLAuthorizationStatusDenied || authorizationStatus == kCLAuthorizationStatusRestricted)
             {
-                if (_fetch_coordinate) {
+                if (authorizationStatus == kCLAuthorizationStatusDenied && _leadUsrToSetting) {
+                    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:self.json[@"fetch_coordinate"]];
+                    [fetch_coordinate setValue:@{@"status":@"STATUSDENIED",} forKey:@"location"];
+                    [UIAlertView showAlertViewWithTitle:@"定位服务关闭" message:@"请在系统设置中开启定位服务。" cancelButtonTitle:@"取消" otherButtonTitles:@[@"去设置"] onDismiss:^(NSInteger buttonIndex) {
+                        [self.controller on:fetch_coordinate];
+                        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                        [[UIApplication sharedApplication] openURL:url];
+                    } onCancel:^{
+                        [fetch_coordinate setValue:@"err" forKey:@"location"];
+                        [self.controller on:fetch_coordinate];
+                    }];
+                } else {
                     NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:self.json[@"fetch_coordinate"]];
                     [fetch_coordinate setValue:@"err" forKey:@"location"];
                     [self.controller on:fetch_coordinate];
                 }
+            } else {
+                lm = [[CLLocationManager alloc]init];
+                lm.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+                lm.distanceFilter = 100;      //100米的变化敏感度
+                if (IOS8_OR_LATER)
+                {
+                    [lm requestWhenInUseAuthorization];
+                }
+                lm.delegate = self;
+                [lm startUpdatingLocation];
             }
-            lm = [[CLLocationManager alloc]init];
-            lm.desiredAccuracy = kCLLocationAccuracyHundredMeters;
-            lm.distanceFilter = 100;      //100米的变化敏感度
-            if (IOS8_OR_LATER)
-            {
-                [lm requestWhenInUseAuthorization];
-            }
-            lm.delegate = self;
-            [lm startUpdatingLocation];
         }
     }
 
@@ -91,17 +110,17 @@
         {
 
         }
-        break;
+            break;
         case kCLErrorDenied:
         {
 
         }
-        break;
+            break;
         default:
         {
-            
+
         }
-        break;
+            break;
     }
 }
 -(void)dealloc{
