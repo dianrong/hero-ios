@@ -653,14 +653,7 @@ static bool customUserAgentHasSet = false;
         _isMagicMove = false;
     });
 }
-#pragma mark keyboard event
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    [super touchesBegan:touches withEvent:event];
-    if ([event.allTouches anyObject].gestureRecognizers.count == 0) {
-        [self.view endEditing:YES];
-    }
-}
+
 - (void)keyboardWillShow:(NSNotification*)notification {
     UIView *view = [self.view findFocusView];
     if (view) {

@@ -94,6 +94,12 @@
     }
     
 }
+#pragma mark touch event
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [super touchesBegan:touches withEvent:event];
+    [self endEditing:YES];
+}
 #pragma mark scrollview delegate
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     [self endEditing:YES];
