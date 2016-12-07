@@ -408,4 +408,9 @@
     }
     return 0;
 }
+#pragma mark scrollview delegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [self endEditing:YES];
+}
+
 @end
