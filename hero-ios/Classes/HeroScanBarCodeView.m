@@ -1,18 +1,33 @@
 //
-//  ScanBarCodeView.m
-//  WYYScanBarCode
+//  BSD License
+//  Copyright (c) Hero software.
+//  All rights reserved.
 //
-//  Created by GPLIU on 15/1/6.
-//  Copyright (c) 2015年 GPLIU. All rights reserved.
+//  Redistribution and use in source and binary forms, with or without modification,
+//  are permitted provided that the following conditions are met:
 //
-//#define left_width (self.frame.size.width*3.0/16.0)
-//#define sacnRect_width (self.frame.size.width*10.0/16.0)
-//#define sacnRect_height (self.frame.size.width*10.0/16.0)
-//#define top_height ((self.frame.size.height-sacnRect_height)/2-60)
-//#define bottom_height (self.frame.size.height - top_height - sacnRect_height)
-//#define back_color [UIColor colorWithRed:0 green:0 blue:0 alpha:0.4]
-//#define yellow_line_length 18
-//#define yellow_line_stroke 3
+//  * Redistributions of source code must retain the above copyright notice, this
+//  list of conditions and the following disclaimer.
+//
+//  * Redistributions in binary form must reproduce the above copyright notice,
+//  this list of conditions and the following disclaimer in the documentation
+//  and/or other materials provided with the distribution.
+//
+//  * Neither the name Facebook nor the names of its contributors may be used to
+//  endorse or promote products derived from this software without specific
+//  prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+//  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+//  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+//  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+//  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+//  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
 
 #import "HeroScanBarCodeView.h"
 
