@@ -81,7 +81,7 @@
             if (authorizationStatus == kCLAuthorizationStatusDenied || authorizationStatus == kCLAuthorizationStatusRestricted)
             {
                 if (authorizationStatus == kCLAuthorizationStatusDenied && _leadUsrToSetting) {
-                    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:self.json[@"fetch_coordinate"]];
+                    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:_fetch_coordinate];
                     [fetch_coordinate setValue:@{@"status":@"STATUSDENIED",} forKey:@"location"];
                     [UIAlertView showAlertViewWithTitle:@"定位服务关闭" message:@"请在系统设置中开启定位服务。" cancelButtonTitle:@"取消" otherButtonTitles:@[@"去设置"] onDismiss:^(NSInteger buttonIndex) {
                         [self.controller on:fetch_coordinate];
@@ -92,7 +92,7 @@
                         [self.controller on:fetch_coordinate];
                     }];
                 } else {
-                    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:self.json[@"fetch_coordinate"]];
+                    NSMutableDictionary *fetch_coordinate = [NSMutableDictionary dictionaryWithDictionary:_fetch_coordinate];
                     [fetch_coordinate setValue:@"err" forKey:@"location"];
                     [self.controller on:fetch_coordinate];
                 }
