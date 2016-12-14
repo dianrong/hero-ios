@@ -44,6 +44,7 @@
     CLLocationManager *lm;
     NSDictionary *_fetch_coordinate;
     BOOL _leadUsrToSetting;
+    NSInteger _locationTimes;
 }
 -(void)on:(NSDictionary *)json{
     [super on:json];
@@ -66,6 +67,7 @@
     }
     if (json[@"fetch_coordinate"]) {
         _fetch_coordinate = json[@"fetch_coordinate"];
+        _locationTimes = 0;
         if (!json[@"hidden"]) {
             self.hidden = true;
         }
@@ -120,7 +122,10 @@
         CLLocation *location = locations.lastObject;
         [fetch_coordinate setValue:@(location.coordinate.latitude) forKey:@"la"];
         [fetch_coordinate setValue:@(location.coordinate.longitude) forKey:@"lo"];
-        [self.controller on:fetch_coordinate];
+        if (_locationTimes < 1) {
+            _locationTimes++;
+            [self.controller on:fetch_coordinate];
+        }
         [lm stopUpdatingLocation];
     }
 }
