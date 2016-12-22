@@ -71,7 +71,17 @@
             [self.controller on:dict];
         }
         if (getInfo[@"deviceId"]) {
-            NSDictionary *dict = @{@"deviceId":@{@"value":@{@"idfa":[self idfaString],@"idfv":[self idfvString],}}};
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            NSString *uuid = [defaults stringForKey:@"deviceId_UUID"];
+            if (uuid.length == 0) {
+                uuid = [self idfaString];
+                if (uuid.length == 0) {
+                    uuid = [self idfvString];
+                }
+                [defaults setObject:uuid forKey:@"deviceId_UUID"];
+                [defaults synchronize];
+            }
+            NSDictionary *dict = @{@"deviceId":@{@"value":@{@"uuid":uuid,@"idfa":[self idfaString],@"idfv":[self idfvString],}}};
             [self.controller on:dict];
         }
     }
