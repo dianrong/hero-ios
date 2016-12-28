@@ -153,8 +153,12 @@
     if (json[@"minLength"]) {
         self.outDelegate.minLen = ((NSNumber*)json[@"minLength"]).integerValue;
     }
+    //Deprecated
     if (json[@"_allowString"]) {
         self.outDelegate.allowString = json[@"_allowString"];
+    }
+    if (json[@"allowString"]) {
+        self.outDelegate.allowString = json[@"allowString"];
     }
     if (json[@"textColor"]) {
         self.textColor = UIColorFromStr(json[@"textColor"]);

@@ -279,7 +279,7 @@ static bool customUserAgentHasSet = false;
                         vC = [[[self class] alloc]initWithUrl:url];
                     }else{
                         if ([[desUrl scheme] isEqualToString:@"tel"]) {
-                            [UIAlertView showAlertViewWithTitle:@"" message:[url stringByReplacingOccurrencesOfString:@"tel://" withString:@""] cancelButtonTitle:@"取消" otherButtonTitles:@[@"呼叫"] onDismiss:^(NSInteger buttonIndex) {
+                            [UIAlertView showAlertViewWithTitle:@"" message:[url stringByReplacingOccurrencesOfString:@"tel://" withString:@""] cancelButtonTitle:LS(@"取消") otherButtonTitles:@[LS(@"呼叫")] onDismiss:^(NSInteger buttonIndex) {
                                 if (buttonIndex == 0) {
                                     [[UIApplication sharedApplication]openURL:desUrl];
                                 }
@@ -287,7 +287,7 @@ static bool customUserAgentHasSet = false;
                                 ;
                             }];
                         }else{
-                            [UIAlertView showAlertViewWithTitle:@"外部链接" message:[NSString stringWithFormat:@"%@",desUrl] cancelButtonTitle:@"取消" otherButtonTitles:@[@"跳转"] onDismiss:^(NSInteger buttonIndex) {
+                            [UIAlertView showAlertViewWithTitle:LS(@"外部链接") message:[NSString stringWithFormat:@"%@",desUrl] cancelButtonTitle:LS(@"取消") otherButtonTitles:@[LS(@"跳转")] onDismiss:^(NSInteger buttonIndex) {
                                 if (buttonIndex == 0) {
                                     [[UIApplication sharedApplication]openURL:desUrl];
                                 }
@@ -368,124 +368,6 @@ static bool customUserAgentHasSet = false;
                     }
                 }
                 [self on:@{@"her":submitData}];
-            } else if ([command hasPrefix:@"uploadFiles"]) {
-                NSString *url = json[@"url"];
-                NSDictionary *content = json[@"content"];
-                NSArray *files = json[@"files"];
-                NSDictionary *apiReturn = json[@"apiReturn"];
-                
-                NSFileManager *fileManager = [NSFileManager defaultManager];
-                NSString *findPath = nil;
-                NSString *fileKey = nil;
-                
-                NSDictionary *headers = @{ @"referer": @"https://www.dianrong.com" };
-
-                NSURLSession *session = [NSURLSession sharedSession];
-                NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-                request.timeoutInterval = 20.0;
-                [request setURL:[NSURL URLWithString:url]];
-                [request setAllHTTPHeaderFields:headers];
-                if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
-                    NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
-                    for (NSString *key in [dic allKeys]) {
-                        [request setValue:dic[key] forHTTPHeaderField:key];
-                    }
-                }
-                [request setHTTPMethod:@"POST"];
-                NSString *boundary = @"---------------------------14737809831466499882746641449";
-                NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@",boundary];
-                [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-                
-                NSMutableData *body = [NSMutableData data];
-                NSUInteger maxLength = [[content allKeys] count];
-                NSUInteger i = 0;
-                [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                for (NSString *key in [content allKeys]) {
-                    i++;
-                    if ([@"files" isEqualToString:content[key]]) {
-                        fileKey = key;
-                        continue;
-                    }
-                    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-                    [body appendData:[[NSString stringWithFormat:@"%@", content[key]] dataUsingEncoding:NSUTF8StringEncoding]];
-                    if (i != maxLength || (files && [files count] > 0)) {
-                        [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                    }
-                }
-                
-                if (files && [files count] > 0) {
-                    i = 0;
-                    maxLength = [files count];
-                    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                    
-                    for (NSString *localImage in files) {
-                        i++;
-                        if ([localImage hasPrefix:@"/"]) {
-                            findPath = localImage;
-                        } else {
-                            NSArray *paths = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-                            NSURL *documentsURL = [paths firstObject];
-                            if (documentsURL) {
-                                findPath = [documentsURL.path stringByAppendingPathComponent:localImage];
-                            }
-                        }
-                        
-                        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", fileKey, localImage] dataUsingEncoding:NSUTF8StringEncoding]];
-                        [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-                        NSData *jpgData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:findPath], 0.6);
-                        [body appendData:jpgData];
-                        if (i != maxLength) {
-                            [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                        }
-                    }
-                }
-                [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-                
-                [request setHTTPBody:body];
-                [request addValue:[NSString stringWithFormat:@"%@", [NSNumber numberWithInteger:[body length]]] forHTTPHeaderField:@"Content-Length"];
-                
-                NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request fromData:body completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                    NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (error) {
-                            DLog(@"error: %@", error);
-                            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:apiReturn];
-                            [dict setObject:@{@"error": @"failed"} forKey:@"value" ];
-                            [self on:dict];
-                        } else {
-                            if (httpResp) {
-                                if (httpResp.statusCode == 200) {
-                                    id result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-                                    if (result) {
-                                        DLog(@"result: %@", result);
-                                        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:apiReturn];
-                                        [dict setObject:result forKey:@"value" ];
-                                        [self on:dict];
-                                    } else {
-                                        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:apiReturn];
-                                        [dict setObject:@{@"error": @"failed"} forKey:@"value" ];
-                                        [self on:dict];
-                                    }
-                                } else {
-                                    if (data) {
-                                        id result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                        DLog(@"server error: %@", response);
-                                        if (result) {
-                                            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:apiReturn];
-                                            [dict setObject:@{@"error": result} forKey:@"value" ];
-                                            [self on:dict];
-                                        } else {
-                                            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:apiReturn];
-                                            [dict setObject:@{@"error": @"failed"} forKey:@"value" ];
-                                            [self on:dict];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }];
-                [uploadTask resume];
             }
         }
         else if (command[@"show"]){
@@ -530,11 +412,17 @@ static bool customUserAgentHasSet = false;
             }
             [_actionDatas setObject:command[@"viewWillDisappear"] forKey:@"viewWillDisappear"];
         }
-    }else if (json[@"globle"]){
+    }else if (json[@"globle"]){//Deprecated
         NSDictionary *globle = json[@"globle"];
         NSString *key = globle[@"key"];
         if (key) {
             [[NSNotificationCenter defaultCenter] postNotificationName:key object:globle];
+        }
+    }else if (json[@"global"]){
+        NSDictionary *global = json[@"global"];
+        NSString *key = global[@"key"];
+        if (key) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:key object:global];
         }
     }else{  //specil logic
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
@@ -683,6 +571,7 @@ static bool customUserAgentHasSet = false;
 - (void)keyboardWillShow:(NSNotification*)notification {
     UIView *view = [self.view findFocusView];
     if (view) {
+        //Web类型的View不需要keyboard联动
         if (!([NSStringFromClass([view class]) componentsSeparatedByString:@"Web"].count > 1)) {
             NSDictionary *info = [notification userInfo];
             NSValue *value = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
@@ -693,7 +582,8 @@ static bool customUserAgentHasSet = false;
             float distance = self.view.bounds.size.height - rect.origin.y - rect.size.height - keyboardSize.size.height;
             float h = 0;
             UIScrollView *s = (UIScrollView*)self.view;
-            if (begainValue.origin.y+begainValue.size.height/2  >= SCREEN_H && _viewOriginYBeforeKeyboard == 0) { //==0是修复第三方输入法未设置startsize的bug
+            //==0是修复第三方输入法未设置startsize的bug
+            if (begainValue.origin.y+begainValue.size.height/2  >= SCREEN_H && _viewOriginYBeforeKeyboard == 0) {
                 _viewOriginYBeforeKeyboard = ((UIScrollView*)self.view).contentOffset.y;
                 h =   ( distance > 0 ? 0:(-distance) ) + _viewOriginYBeforeKeyboard + 5;
             }else{

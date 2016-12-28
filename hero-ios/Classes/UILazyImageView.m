@@ -229,16 +229,7 @@ static NSString * cacheFolder;
 }
 + (void) registerForName:(NSString*)url block:(LazyBasicBlock)block
 {
-    int scale = [[UIScreen mainScreen]scale];
-    if (![url hasPrefix:@"http"]) {
-        if (scale > 1) {
-            url = [url stringByReplacingOccurrencesOfString:@".jpg" withString:[NSString stringWithFormat:@"@%dx.jpg",scale]];
-            url = [url stringByReplacingOccurrencesOfString:@".png" withString:[NSString stringWithFormat:@"@%dx.png",scale]];
-        }
-        url = [NSString stringWithFormat:@"%@%@",kBaseurl,url];
-    }
     [UILazyImageView registerForURL:[NSURL URLWithString:url] block:block];
-
 }
 + (void) registerForURL:(NSURL*)url block:(LazyBasicBlock)block;
 {

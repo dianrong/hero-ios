@@ -31,8 +31,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#define kBaseurl                @"https://borrower.dianrong.com"
-#define kBaseurlOnly            false
 
 #define SCREEN_W                ([[UIScreen mainScreen] bounds].size.width)
 #define SCREEN_H                ([[UIScreen mainScreen] bounds].size.height)

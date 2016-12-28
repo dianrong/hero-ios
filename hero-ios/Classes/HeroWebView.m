@@ -72,17 +72,6 @@
             }
         }
         [self loadRequest:request];
-        if ([request.URL.absoluteString componentsSeparatedByString:kBaseurl].count<2) {
-            if (!_ownnerLabel) {
-                _ownnerLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 48)];
-                _ownnerLabel.textAlignment = NSTextAlignmentCenter;
-                _ownnerLabel.font = [UIFont systemFontOfSize:12];
-                _ownnerLabel.textColor = UIColorFromRGB(0xaaaaaa);
-            }
-            _ownnerLabel.text = [NSString stringWithFormat:@"本页面由 %@ 提供",request.URL.host];
-            [self addSubview:_ownnerLabel];
-            [self sendSubviewToBack:_ownnerLabel];
-        }
     }
     if (json[@"innerHtml"]) {
         [self loadHTMLString:json[@"innerHtml"] baseURL:NULL];
@@ -122,6 +111,15 @@
         [self.controller on:self.json[@"webViewDidFinishLoad"]];
     }
     if (self.controller.webview.superview) { //普通web页面
+        if (!_ownnerLabel) {
+            _ownnerLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 48)];
+            _ownnerLabel.textAlignment = NSTextAlignmentCenter;
+            _ownnerLabel.font = [UIFont systemFontOfSize:12];
+            _ownnerLabel.textColor = UIColorFromRGB(0xaaaaaa);
+        }
+        _ownnerLabel.text = [NSString stringWithFormat:@"本页面由 %@ 提供",webView.request.URL.host];
+        [self addSubview:_ownnerLabel];
+        [self sendSubviewToBack:_ownnerLabel];
         [self.controller on:@{@"common":@{@"event":@"finish"}}];
     }
 }
@@ -143,12 +141,6 @@
         return YES;
     }else{
         if ([request.URL.absoluteString hasPrefix:@"hero://"]) {
-#ifdef DEBUG
-#else
-            if (![_urlStr hasPrefix:kBaseurl] && kBaseurlOnly) {
-                return false;
-            }
-#endif
             NSString* str;
             if ([request.URL.absoluteString hasSuffix:@"ready"]) {
                 str = [webView stringByEvaluatingJavaScriptFromString:
