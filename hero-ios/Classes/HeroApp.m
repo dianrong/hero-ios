@@ -34,6 +34,11 @@
 
 #import "HeroApp.h"
 #import "UIView+Hero.h"
+@interface UITabBar (badge)
+- (void)showBadgeOnItemIndex:(int)index;   //显示小红点
+- (void)hideBadgeOnItemIndex:(int)index; //隐藏小红点
+@end
+
 
 @interface HeroApp()<UITabBarControllerDelegate>
 @end
@@ -41,6 +46,29 @@
 {
     BOOL _translucent;
     UIColor *_tintColor;
+    UITabBarController *tabCon;
+    UINavigationController *nav;
+}
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        //new app depreated
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"newApp" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            NSDictionary *json = note.object;
+            [self on:note.object];
+        }];
+        //tabSelect depreated
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"tabSelect" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            [self on:note.object];
+        }];
+        //app red dot
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"HeroApp" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+            NSDictionary *json = note.object;
+            [self on:note.object];
+        }];
+    }
+    return self;
 }
 -(void)on:(NSDictionary *)json{
     if (json[@"translucent"]) {
@@ -49,10 +77,28 @@
     if (json[@"tintColor"]) {
         _tintColor = UIColorFromStr(json[@"tintColor"]);
     }
+    if (json[@"badgeValue"]) {
+        int index = [json[@"badgeValue"][@"index"] intValue];
+        NSString *badgeValue = json[@"badgeValue"][@"badgeValue"];
+        if ([badgeValue isEqualToString:@"red"]) {
+            [tabCon.tabBar showBadgeOnItemIndex:index];
+        }else if (badgeValue.length > 0){
+            tabCon.tabBar.items[index].badgeValue = badgeValue;
+        }else{
+            [tabCon.tabBar hideBadgeOnItemIndex:index];
+            tabCon.tabBar.items[index].badgeValue = nil;
+        }
+    }
+    if (json[@"tabSelect"]) {
+        NSInteger selected = [json[@"tabSelect"][@"value"] integerValue];
+        tabCon.selectedIndex = selected;
+        [self tabBarController:tabCon didSelectViewController:tabCon.selectedViewController];
+        [nav popToRootViewControllerAnimated:NO];
+    }
     if (json[@"tabs"]) {
         NSArray *arr = json[@"tabs"];
         if (arr.count > 1) {
-            UITabBarController *tabCon = [[UITabBarController alloc]init];
+            tabCon = [[UITabBarController alloc]init];
             tabCon.tabBar.translucent = _translucent;
             tabCon.automaticallyAdjustsScrollViewInsets = NO;
             tabCon.delegate = self;
@@ -71,7 +117,7 @@
                     tabCon.navigationItem.titleView = vc.navigationItem.titleView;
                 }
             }
-            UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:tabCon];
+            nav = [[UINavigationController alloc]initWithRootViewController:tabCon];
             nav.navigationBar.translucent = _translucent;
             [nav setNavigationBarHidden:NO];
             [tabCon.view setTintColor:_tintColor?_tintColor:UIColorFromStr(@"37B98F")];
@@ -83,12 +129,6 @@
                 APP.keyWindow.rootViewController = nav;
                 [APP.keyWindow makeKeyAndVisible];
             }
-            [[NSNotificationCenter defaultCenter] addObserverForName:@"tabSelect" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-                NSInteger selected = [note.object[@"value"] integerValue];
-                tabCon.selectedIndex = selected;
-                [self tabBarController:tabCon didSelectViewController:tabCon.selectedViewController];
-                [nav popToRootViewControllerAnimated:NO];
-            }];
         }else{
             NSDictionary *dic = arr[0];
             NSString *type = dic[@"class"];
@@ -120,3 +160,38 @@
 }
 
 @end
+
+@implementation UITabBar (badge)
+- (void)showBadgeOnItemIndex:(int)index{
+    //移除之前的小红点
+    [self removeBadgeOnItemIndex:index];
+    //新建小红点
+    UIView *badgeView = [[UIView alloc]init];
+    badgeView.tag = 888 + index;
+    badgeView.layer.cornerRadius = 5;
+    badgeView.backgroundColor = [UIColor redColor];
+    CGRect tabFrame = self.frame;
+    //确定小红点的位置
+    float percentX = (index +0.6) / self.items.count;
+    CGFloat x = ceilf(percentX * tabFrame.size.width);
+    CGFloat y = ceilf(0.1 * tabFrame.size.height);
+    badgeView.frame = CGRectMake(x, y, 10, 10);
+    [self addSubview:badgeView];
+}
+
+- (void)hideBadgeOnItemIndex:(int)index{
+    //移除小红点
+    [self removeBadgeOnItemIndex:index];
+}
+
+- (void)removeBadgeOnItemIndex:(int)index{
+    //按照tag值进行移除
+    for (UIView *subView in self.subviews) {
+        if (subView.tag == 888+index) {
+            [subView removeFromSuperview];
+        }
+    }
+}
+
+@end
+
