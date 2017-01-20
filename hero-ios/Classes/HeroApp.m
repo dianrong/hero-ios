@@ -60,7 +60,7 @@
         }];
         //tabSelect depreated
         [[NSNotificationCenter defaultCenter] addObserverForName:@"tabSelect" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            [self on:note.object];
+            [self on:@{@"tabSelect":note.object}];
         }];
         //app red dot
         [[NSNotificationCenter defaultCenter] addObserverForName:@"HeroApp" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
