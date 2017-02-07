@@ -268,6 +268,21 @@ static void *s_controller = &s_controller;
                 [layoutListenners addObject:self];
             }
         }
+        if (json[@"xOffset"]) {
+            if (self.json[@"xOffset"] != json[@"xOffset"]) {
+                [self.json setValue:json[@"xOffset"] forKey:@"xOffset"];
+            }
+            NSString *yOffset = json[@"xOffset"]; //name+offset
+            NSString *name = [yOffset componentsSeparatedByString:@"+"][0];
+            float offset = [[yOffset componentsSeparatedByString:@"+"][1] floatValue];
+            UIView *top = [self.superview findViewByName:name] ?: [self.controller.view findViewByName:name];
+            rect.origin.x = top.frame.origin.x + top.frame.size.width + offset;
+            [self.json setValue:[NSMutableDictionary dictionaryWithDictionary: @{@"x":[@(rect.origin.x) description],@"y":[@(rect.origin.y) description],@"w":[@(rect.size.width) description],@"h":[@(rect.size.height) description]} ]forKey:@"frame"];
+            NSMutableArray *layoutListenners = top.layoutListenners;
+            if (![layoutListenners containsObject:self]) {
+                [layoutListenners addObject:self];
+            }
+        }
         self.frame = rect;
         if (self.json[@"contentSizeElement"]) {
             if (!self.hidden) {
@@ -298,7 +313,12 @@ static void *s_controller = &s_controller;
         }
         if (self.layoutListenners.count > 0) {
             for (UIView *listenner in self.layoutListenners) {
-                [listenner on:@{@"frame":listenner.json[@"frame"],@"yOffset":listenner.json[@"yOffset"]}];
+                if (listenner.json[@"yOffset"]) {
+                    [listenner on:@{@"frame":listenner.json[@"frame"],@"yOffset":listenner.json[@"yOffset"]}];
+                }
+                if (listenner.json[@"xOffset"]) {
+                    [listenner on:@{@"frame":listenner.json[@"frame"],@"xOffset":listenner.json[@"xOffset"]}];
+                }
             }
         }
     }
