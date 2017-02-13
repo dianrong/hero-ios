@@ -367,11 +367,14 @@ static NSString *addIdentifier = @"addIdentifier";
             [strongSelf setALAssetImage:nil];
         }];
     }];
-    [self updateTotal];
-    [self reloadData];
-    // 移至最底部
-    NSInteger rows = [self.collectionView numberOfItemsInSection:0] - 1;
-    [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:rows inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self updateTotal];
+        [self reloadData];
+        // 移至最底部
+        NSInteger rows = [self.collectionView numberOfItemsInSection:0] - 1;
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:rows inSection:0] atScrollPosition:UICollectionViewScrollPositionBottom animated:YES];
+    });
 }
 
 - (void)setALAssetImage:(ALAsset *)asset {
