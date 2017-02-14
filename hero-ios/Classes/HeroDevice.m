@@ -85,6 +85,15 @@
             [self.controller on:dict];
         }
     }
+    if (json[@"copy"]) {
+        UIPasteboard *gpBoard = [UIPasteboard generalPasteboard];
+        [gpBoard setString:json[@"copy"]];
+    }
+    if (json[@"paste"]) {
+        UIPasteboard *gpBoard = [UIPasteboard generalPasteboard];
+        [self.controller on:@{@"name":self.name,@"value":gpBoard.string}];
+    }
+
 }
 
 - (NSString *)getDevicePlatform {
