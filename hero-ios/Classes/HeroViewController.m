@@ -156,7 +156,7 @@ static bool customUserAgentHasSet = false;
                 [v on:element];
             }
             _shadowView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-            _shadowView.backgroundColor = [UIColor colorWithRed:12 green:20 blue:42 alpha:0.5];
+            _shadowView.backgroundColor = [UIColor colorWithRed:0.0470588 green:0.07843 blue:0.1647 alpha:0.5];
             [_shadowView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)]];
         }
         NSDictionary *ui = json[@"ui"];
