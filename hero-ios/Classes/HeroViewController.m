@@ -158,6 +158,10 @@ static bool customUserAgentHasSet = false;
             _shadowView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
             _shadowView.backgroundColor = [UIColor colorWithRed:0.0470588 green:0.07843 blue:0.1647 alpha:0.5];
             [_shadowView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)]];
+            _shadowView.alpha = 0;
+            _leftMenuView.frameRight = -1;
+            [KEY_WINDOW addSubview:_shadowView];
+            [KEY_WINDOW addSubview:_leftMenuView];
         }
         NSDictionary *ui = json[@"ui"];
         if (([ui[@"version"] floatValue] == [self.ui[@"version"] floatValue]) && ([ui[@"version"] floatValue] != -1)) {
@@ -408,22 +412,17 @@ static bool customUserAgentHasSet = false;
             BOOL showMenu = [json[@"command"][@"showMenu"] boolValue];
             if (_enableMenu) {
                 if (showMenu) {
-                    [KEY_WINDOW addSubview:_shadowView];
-                    [KEY_WINDOW addSubview:_leftMenuView];
                     _shadowView.alpha = 0;
-                    _leftMenuView.frameRight = -1;
+                    _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
                     [UIView animateWithDuration:.3 animations:^{
                         _shadowView.alpha = 1;
-                        _leftMenuView.frameLeft = 0;
+                        _leftMenuView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
                     } completion:nil];
                 } else {
                     [UIView animateWithDuration:.3 animations:^{
                         _shadowView.alpha = 0;
-                        _leftMenuView.frameRight = -1;
-                    } completion:^(BOOL finished) {
-                        [_shadowView removeFromSuperview];
-                        [_leftMenuView removeFromSuperview];
-                    }];
+                        _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+                    } completion:nil];
                 }
             }
         }
@@ -672,11 +671,8 @@ static bool customUserAgentHasSet = false;
 - (void)dismiss {
     [UIView animateWithDuration:.3 animations:^{
         _shadowView.alpha = 0;
-        _leftMenuView.frameRight = -1;
-    } completion:^(BOOL finished) {
-        [_shadowView removeFromSuperview];
-        [_leftMenuView removeFromSuperview];
-    }];
+        _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+    } completion:nil];
 }
 //dealloc
 -(void)dealloc{
