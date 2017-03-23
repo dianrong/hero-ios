@@ -40,7 +40,7 @@
     NSString *title = json[@"title"];
     NSString *tintColor = json[@"tintColor"];
     if (tintColor) {
-        self.tintColor = UIColorFromStr(@"tintColor");
+        self.tintColor = UIColorFromStr(tintColor);
     }
 
     if (imageName) {

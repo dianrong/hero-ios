@@ -288,6 +288,7 @@
                 [cell on:cellItem];
                 HeroTableViewCell *anotherCell = [[HeroTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
                 anotherCell.heroContentView = cell;
+                anotherCell.backgroundColor = [UIColor clearColor];
                 anotherCell.frame = cell.bounds;
                 [anotherCell addSubview:cell];
                 anotherCell.selectionStyle = UITableViewCellSelectionStyleNone;

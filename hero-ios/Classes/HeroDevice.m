@@ -93,7 +93,13 @@
         UIPasteboard *gpBoard = [UIPasteboard generalPasteboard];
         [self.controller on:@{@"name":self.name,@"value":gpBoard.string}];
     }
-
+    if (json[@"getAppList"]) {
+        id action = getInfo[@"getAppList"];
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:action];
+        [dic setObject:@{@"appList":@[]} forKey:@"value"];
+        [dic setObject:@"iOS" forKey:@"system"];
+        [self.controller on:dic];
+    }
 }
 
 - (NSString *)getDevicePlatform {

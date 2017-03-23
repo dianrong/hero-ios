@@ -40,6 +40,7 @@
 #import "NSString+Additions.h"
 #import "HeroTextField.h"
 #import "HeroSwitch.h"
+#import "UIView+Frame.h"
 #import "HeroBarButtonItem.h"
 #import "UIAlertView+blockDelegate.h"
 #import "HeroScrollView.h"
@@ -57,6 +58,9 @@ static bool customUserAgentHasSet = false;
     UIColor *_navigationBarColor;
     float _viewOriginYBeforeKeyboard;
     NSMutableDictionary *_actionDatas;
+    UIView *_leftMenuView;
+    UIView *_shadowView;
+    BOOL _enableMenu;
 }
 +(void)heroUseragent{
     if (customUserAgentHasSet) {
@@ -74,6 +78,7 @@ static bool customUserAgentHasSet = false;
     self = [self init];
     if (self) {
         _useHero = YES;
+        _enableMenu = NO;
         self.url = url;
     }
     return self;
@@ -128,6 +133,36 @@ static bool customUserAgentHasSet = false;
             }
         }
     }else if (json[@"ui"]) {
+        if ([json valueForKeyPath:@"ui.leftMenu"]) {
+            NSDictionary *leftMenu = [json valueForKeyPath:@"ui.leftMenu"];
+            [_leftMenuView removeFromSuperview];
+            _leftMenuView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height)];
+            _leftMenuView.backgroundColor = UIColorFromStr(leftMenu[@"backgroundColor"]?:@"f5f5f5");
+            NSArray *views = leftMenu[@"views"];
+            for (NSDictionary *element in views) {
+                UIView *v = nil;
+                if (element[@"class"]) {
+                    v = [[NSClassFromString(element[@"class"]) alloc]init];
+                }else if (element[@"res"]){
+                    v = [[NSBundle mainBundle] loadNibNamed:element[@"res"] owner:self options:NULL][0];
+                }
+                if (!v) {
+                    v = [[UIView alloc]init];
+                    v.backgroundColor = [UIColor redColor];
+                }
+                UIView *p = [self.view findViewByName:element[@"parent"]];
+                [(p?:_leftMenuView) addSubview:v];
+                v.controller = self;
+                [v on:element];
+            }
+            _shadowView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            _shadowView.backgroundColor = [UIColor colorWithRed:0.0470588 green:0.07843 blue:0.1647 alpha:0.5];
+            [_shadowView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)]];
+            _shadowView.alpha = 0;
+            _leftMenuView.frameRight = -1;
+            [KEY_WINDOW addSubview:_shadowView];
+            [KEY_WINDOW addSubview:_leftMenuView];
+        }
         NSDictionary *ui = json[@"ui"];
         if (([ui[@"version"] floatValue] == [self.ui[@"version"] floatValue]) && ([ui[@"version"] floatValue] != -1)) {
             //todo
@@ -368,6 +403,27 @@ static bool customUserAgentHasSet = false;
                     }
                 }
                 [self on:@{@"her":submitData}];
+            }
+        }
+        else if (json[@"command"][@"enableMenu"]) {
+            _enableMenu = [json[@"command"][@"enableMenu"] boolValue];
+        }
+        else if (json[@"command"][@"showMenu"]) {
+            BOOL showMenu = [json[@"command"][@"showMenu"] boolValue];
+            if (_enableMenu) {
+                if (showMenu) {
+                    _shadowView.alpha = 0;
+                    _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+                    [UIView animateWithDuration:.3 animations:^{
+                        _shadowView.alpha = 1;
+                        _leftMenuView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+                    } completion:nil];
+                } else {
+                    [UIView animateWithDuration:.3 animations:^{
+                        _shadowView.alpha = 0;
+                        _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+                    } completion:nil];
+                }
             }
         }
         else if (command[@"show"]){
@@ -612,6 +668,12 @@ static bool customUserAgentHasSet = false;
     }
 }
 
+- (void)dismiss {
+    [UIView animateWithDuration:.3 animations:^{
+        _shadowView.alpha = 0;
+        _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+    } completion:nil];
+}
 //dealloc
 -(void)dealloc{
     DLog(@"viewcontroller dealloc ");
