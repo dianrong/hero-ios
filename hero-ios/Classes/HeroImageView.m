@@ -116,7 +116,7 @@
                     self.alpha = 1.0f;
                 }];
             }];
-        } else{
+        } else if (imageStr.length > 0) {
             UIImage *image = [UIImage imageNamed:imageStr];
             if (image) {
                 self.image = image;

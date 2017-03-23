@@ -37,6 +37,10 @@
 static void *s_ripple = &s_ripple;
 static void *s_raised = &s_raised;
 static void *s_rippleExpanding = &s_rippleExpanding;
+@interface UIViewPaperDelegate : NSObject
+
+@end
+
 
 @implementation UIView (Paper)
 @dynamic raised;
@@ -140,13 +144,19 @@ static void *s_rippleExpanding = &s_rippleExpanding;
         
         CAAnimationGroup *animGroup = [CAAnimationGroup animation];
         animGroup.duration  = 0.5f;
-        animGroup.delegate=self;
+        animGroup.delegate= [UIViewPaperDelegate class];
         animGroup.animations = [NSArray arrayWithObjects:animation,fade, nil];
         [animGroup setValue:aLayer forKey:@"animationLayer"];
         [aLayer addAnimation:animGroup forKey:@"scale"];
     }
 }
--(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+
+
+@end
+
+@implementation UIViewPaperDelegate
+
++(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
     CALayer *layer = [anim valueForKey:@"animationLayer"];
     if(layer && [layer.name isEqualToString:@"ripple"]){
         [layer removeAnimationForKey:@"scale"];
@@ -155,5 +165,5 @@ static void *s_rippleExpanding = &s_rippleExpanding;
         anim = nil;
     }
 }
-
 @end
+

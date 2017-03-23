@@ -139,6 +139,17 @@ static void *s_controller = &s_controller;
                     }];
                 }
             }
+            if ([animationType isEqualToString:@"doflip"]) {
+                [UIView beginAnimations:@"doflip" context:nil];
+                [UIView setAnimationDuration:animation];
+                [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft  forView:self cache:YES];
+                NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:json];
+                [dic removeObjectForKey:@"animation"];
+                [self on:dic];
+                [UIView commitAnimations];
+            }
             return;
         }
         //属性变换动画
@@ -411,8 +422,34 @@ static void *s_controller = &s_controller;
             [self.layer addSublayer:dashedborder];
         }
     }
+    if (json[@"gesture"]) {
+        self.userInteractionEnabled = YES;
+        self.multipleTouchEnabled = YES;
+        NSArray *gesObjects = json[@"gesture"];
+        for (int i = 0; i<gesObjects.count; i++) {
+            NSDictionary *gesObject = gesObjects[i];
+            if ([@"swip" isEqualToString: gesObject[@"name"]]) {
+                UISwipeGestureRecognizer *ges = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(onHeroSwip:)];
+                ges.accessibilityValue = [NSString stringWithFormat:@"%d",i];
+                NSString *direction = gesObject[@"direction"];
+                if ([@"right" isEqualToString:direction]) {
+                    ges.direction = UISwipeGestureRecognizerDirectionRight;
+                }else if ([@"left" isEqualToString:direction]){
+                    ges.direction = UISwipeGestureRecognizerDirectionLeft;
+                }else if ([@"up" isEqualToString:direction]){
+                    ges.direction = UISwipeGestureRecognizerDirectionUp;
+                }else if ([@"down" isEqualToString:direction]){
+                    ges.direction = UISwipeGestureRecognizerDirectionDown;
+                }
+                [self addGestureRecognizer:ges];
+            }
+        }
+    }
     //subViews
     if (json[@"subViews"]) {
+        for (UIView *v in self.subviews) {
+            [v removeFromSuperview];
+        }
         for (NSDictionary *dic in json[@"subViews"]) {
             NSString *type = dic[@"class"];
             UIView *view = [[NSClassFromString(type) alloc]init];
@@ -421,6 +458,15 @@ static void *s_controller = &s_controller;
             [view on:dic];
         }
     }
+}
+
+-(void)onHeroSwip:(UISwipeGestureRecognizer *)sender{
+    int tag = [sender.accessibilityValue intValue];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    [dic setValue:@(tag) forKey:@"value"];
+    [dic setValue:self.json[@"gesture"] forKey:@"gesture"];
+    [dic setValue:self.name forKey:@"name"];
+    [self.controller on:dic];
 }
 
 @end
