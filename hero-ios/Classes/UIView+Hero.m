@@ -144,7 +144,7 @@ static void *s_controller = &s_controller;
                 [UIView setAnimationDuration:animation];
                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
                 [UIView setAnimationDelegate:self];
-                [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft  forView:self cache:YES];
+                [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft  forView:self cache:NO];
                 NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:json];
                 [dic removeObjectForKey:@"animation"];
                 [self on:dic];
