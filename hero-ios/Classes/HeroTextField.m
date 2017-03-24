@@ -179,6 +179,14 @@
     if (self.json[@"textFieldDidEditing"]) {
         [self addTarget:self action:@selector(onTextChanged:) forControlEvents:UIControlEventEditingChanged];
     }
+
+    if (json[@"focus"]) {
+        if ([json[@"focus"] boolValue]) {
+            [self becomeFirstResponder];
+        } else {
+            [self resignFirstResponder];
+        }
+    }
 }
 
 - (void)onTextChanged:(HeroTextField *)sender {
