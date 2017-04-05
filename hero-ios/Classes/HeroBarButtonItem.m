@@ -55,7 +55,7 @@
                 }];
             }
         }else{
-            self = [super initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(onAction:)];
+            self = [super initWithImage:[[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(onAction:)];
         }
         
     }else if (title){
