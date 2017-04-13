@@ -46,32 +46,65 @@
 {
     UILabel *_ownnerLabel;
     NSString *_urlStr;
+    BOOL _isGetRequest;
+    id _postData;
+    NSArray *_hijackURLs;
 }
-
 
 -(void)on:(NSDictionary *)json
 {
     [super on:json];
     self.backgroundColor = UIColorFromRGB(0xf6f6f6);
     self.delegate = self;
+    if (json[@"hijackURLs"]) {
+        _hijackURLs = json[@"hijackURLs"];
+    }
     if (json[@"url"]) {
-        _urlStr = json[@"url"];
-#ifdef DEBUG
-        if ([_urlStr componentsSeparatedByString:@"?"].count > 1) {
-            _urlStr = [NSString stringWithFormat:@"%@%@",_urlStr,@"&test=true" ];
-        }else{
-            _urlStr = [NSString stringWithFormat:@"%@%@",_urlStr,@"?test=true" ];
-        }
-#endif
-        NSURL *url = [NSURL URLWithString:_urlStr];
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
-            NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
-            for (NSString *key in [dic allKeys]) {
-                [request setValue:dic[key] forHTTPHeaderField:key];
+        _isGetRequest = YES;
+        if ([json[@"url"] isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dic = (NSDictionary*)json[@"url"];
+            NSString *method = dic[@"method"];
+            _urlStr = dic[@"url"];
+            _postData = dic[@"data"];
+            if (_postData) {
+                _isGetRequest = NO;
             }
+            if (method) {
+                if ([method isEqualToString:@"POST"]) {
+                    _isGetRequest = NO;
+                } else {
+                    _isGetRequest = YES;
+                }
+            }
+        } else {
+            _urlStr = json[@"url"];
         }
-        [self loadRequest:request];
+        if (_isGetRequest) {
+#ifdef DEBUG
+            if ([_urlStr componentsSeparatedByString:@"?"].count > 1) {
+                _urlStr = [NSString stringWithFormat:@"%@%@",_urlStr,@"&test=true" ];
+            }else{
+                _urlStr = [NSString stringWithFormat:@"%@%@",_urlStr,@"?test=true" ];
+            }
+#endif
+            NSURL *url = [NSURL URLWithString:_urlStr];
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+            if ([[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"]) {
+                NSDictionary *dic = [[NSUserDefaults standardUserDefaults] valueForKey:@"httpHeader"];
+                for (NSString *key in [dic allKeys]) {
+                    [request setValue:dic[key] forHTTPHeaderField:key];
+                }
+            }
+            [self loadRequest:request];
+        } else {
+            NSURL *url = [NSURL URLWithString:_urlStr];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+            [request setHTTPMethod:@"POST"];
+            if (_postData) {
+                [request setHTTPBody:[_postData dataUsingEncoding:NSUTF8StringEncoding]];
+            }
+            [self loadRequest:request];
+        }
     }
     if (json[@"innerHtml"]) {
         [self loadHTMLString:json[@"innerHtml"] baseURL:NULL];
@@ -101,6 +134,21 @@
         self.scrollView.contentOffset = CGPointMake(x.floatValue, y.floatValue);
     }
 }
+
+- (void)refresh {
+    if (!_isGetRequest && [self.request.URL.absoluteString isEqualToString:_urlStr]) {
+        NSURL *url = [NSURL URLWithString:_urlStr];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+        [request setHTTPMethod:@"POST"];
+        if (_postData) {
+            [request setHTTPBody:[_postData dataUsingEncoding:NSUTF8StringEncoding]];
+        }
+        [self loadRequest:request];
+    } else {
+        [self reload];
+    }
+}
+
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
@@ -134,6 +182,15 @@
 }
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    NSString *path = [request URL].absoluteString;
+    for (NSDictionary *item in _hijackURLs) {
+        NSString *hackurl = item[@"url"];
+        BOOL isLoad = [item[@"isLoad"] boolValue];
+        if ([hackurl isEqualToString:path]) {
+            [self.controller on:@{@"name":self.name,@"url":hackurl}];
+            return isLoad;
+        }
+    }
     if ([request.URL.absoluteString hasPrefix:@"http"] || [request.URL.absoluteString hasPrefix:@"file"]) {
         if ([request.URL.absoluteString isEqualToString:@"https://cashloan-callback.dianrong.com/"]) {
             [self.controller on:@{@"command":@"back"}];
