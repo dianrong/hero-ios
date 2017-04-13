@@ -70,7 +70,7 @@
             _placeHolderLabel.adjustsFontSizeToFitWidth = YES;
             _placeHolderLabel.minimumScaleFactor = 0.5f;
             _placeHolderLabel.text = json[@"placeHolder"];
-            _placeHolderLabel.textColor = [UIColor lightGrayColor];
+            _placeHolderLabel.textColor = UIColorFromRGB(0xcccccc);
             [self addSubview:_placeHolderLabel];
         }
     }
