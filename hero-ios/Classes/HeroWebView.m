@@ -192,9 +192,6 @@
         }
     }
     if ([request.URL.absoluteString hasPrefix:@"http"] || [request.URL.absoluteString hasPrefix:@"file"]) {
-        if ([request.URL.absoluteString isEqualToString:@"https://cashloan-callback.dianrong.com/"]) {
-            [self.controller on:@{@"command":@"back"}];
-        }
         return YES;
     }else{
         if ([request.URL.absoluteString hasPrefix:@"hero://"]) {
