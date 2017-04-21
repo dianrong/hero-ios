@@ -166,12 +166,12 @@
     if (json[@"hAuto"]) {
         self.numberOfLines = 0;
         CGSize size = [self sizeThatFits:self.bounds.size];
-        [self on:@{@"frame":@{@"x":[@(self.frame.origin.x) description],@"y":[@(self.frame.origin.y) description],@"w":[@(self.frame.size.width) description],@"h":[@(size.height) description],},@"animation":@(0.25)}];
+        [self on:@{@"frame":@{@"x":[@(self.frame.origin.x) description],@"y":[@(self.frame.origin.y) description],@"w":[@(self.frame.size.width) description],@"h":[@(size.height) description],}}];
     }
     if (json[@"wAuto"]) {
         self.numberOfLines = 1;
         [self sizeToFit];
-        [self on:@{@"frame":@{@"x":[@(self.frame.origin.x) description],@"y":[@(self.frame.origin.y) description],@"w":[@(self.bounds.size.width) description],@"h":[@(self.bounds.size.height) description],},@"animation":@(0.25)}];
+        [self on:@{@"frame":@{@"x":[@(self.frame.origin.x) description],@"y":[@(self.frame.origin.y) description],@"w":[@(self.bounds.size.width) description],@"h":[@(self.bounds.size.height) description],}}];
     }
     if (json[@"canCopy"]) {
         self.userInteractionEnabled = YES;
