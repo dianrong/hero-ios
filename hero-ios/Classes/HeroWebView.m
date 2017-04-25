@@ -198,7 +198,7 @@
             NSString* str;
             if ([request.URL.absoluteString hasSuffix:@"ready"]) {
                 str = [webView stringByEvaluatingJavaScriptFromString:
-                       @"API.outObjects()"];
+                       @"Hero.outObjects()"];
             }else{
                 str = [request.URL.absoluteString stringByReplacingOccurrencesOfString:@"hero://" withString:@""];
                 str = [str decodeFromPercentEscapeString];

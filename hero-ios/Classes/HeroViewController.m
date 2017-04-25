@@ -476,7 +476,7 @@ static bool customUserAgentHasSet = false;
         }
     }else{  //specil logic
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
-        NSString *js = [NSString stringWithFormat:@"API.in(%@)",[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]];
+        NSString *js = [NSString stringWithFormat:@"Hero.in(%@)",[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]];
         [self.webview stringByEvaluatingJavaScriptFromString:js];
     }
 }
