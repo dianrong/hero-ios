@@ -103,21 +103,6 @@
             [self layoutSubviews];
         }];
     }
-    //Deprecated
-    if (json[@"AccessoryType"]) {
-        NSString *type = json[@"AccessoryType"];
-        if ([@"None" isEqualToString:type]) {
-            self.accessoryType = UITableViewCellAccessoryNone;
-        }else if ([@"DisclosureIndicator" isEqualToString:type]){
-            self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        }else if ([@"DetailDisclosureButton" isEqualToString:type]){
-            self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-        }else if ([@"Checkmark" isEqualToString:type]){
-            self.accessoryType = UITableViewCellAccessoryCheckmark;
-        }else if ([@"DetailButton" isEqualToString:type]){
-            self.accessoryType = UITableViewCellAccessoryDetailButton;
-        }
-    }
     if (json[@"accessoryType"]) {
         NSString *type = json[@"accessoryType"];
         if ([@"None" isEqualToString:type]) {

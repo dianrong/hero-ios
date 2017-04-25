@@ -468,12 +468,6 @@ static bool customUserAgentHasSet = false;
             }
             [_actionDatas setObject:command[@"viewWillDisappear"] forKey:@"viewWillDisappear"];
         }
-    }else if (json[@"globle"]){//Deprecated
-        NSDictionary *globle = json[@"globle"];
-        NSString *key = globle[@"key"];
-        if (key) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:key object:globle];
-        }
     }else if (json[@"global"]){
         NSDictionary *global = json[@"global"];
         NSString *key = global[@"key"];
