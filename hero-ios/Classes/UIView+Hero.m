@@ -445,6 +445,20 @@ static void *s_controller = &s_controller;
             }
         }
     }
+    if (json[@"gradientBackgroundColor"]) {
+        NSMutableArray *gradientColors = [NSMutableArray array];
+        for (int i = 0; i < [json[@"gradientBackgroundColor"] count]; i++) {
+            [gradientColors addObject:(__bridge id)UIColorFromStr(json[@"gradientBackgroundColor"][i]).CGColor];
+        }
+        if ([gradientColors count] > 0) {
+            CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+            gradientLayer.colors = gradientColors;
+            gradientLayer.startPoint = CGPointMake(0, 0);
+            gradientLayer.endPoint = CGPointMake(0, 1.0);
+            gradientLayer.frame = self.bounds;
+            [self.layer addSublayer:gradientLayer];
+        }
+    }
     //subViews
     if (json[@"subViews"]) {
         for (UIView *v in self.subviews) {
