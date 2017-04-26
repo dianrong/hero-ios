@@ -507,8 +507,8 @@ static bool customUserAgentHasSet = false;
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    if (_actionDatas[@"viewWillDisappear"]) {
-        [self on:_actionDatas[@"viewWillDisappear"]];
+    if (_actionDatas[@"viewDidAppear"]) {
+        [self on:_actionDatas[@"viewDidAppear"]];
     }
 }
 -(void)viewDidLoad{
