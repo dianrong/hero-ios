@@ -97,6 +97,14 @@
     }
     if (json[@"tabs"]) {
         NSArray *arr = json[@"tabs"];
+        if (self.window) {
+            [self.window.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [obj removeFromSuperview];
+            }];
+        }
+        [APP.keyWindow.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            [obj removeFromSuperview];
+        }];
         if (arr.count > 1) {
             tabCon = [[UITabBarController alloc]init];
             tabCon.tabBar.translucent = _translucent;
