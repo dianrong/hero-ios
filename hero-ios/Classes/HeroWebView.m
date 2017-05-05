@@ -175,6 +175,9 @@
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.deviceWidth=%f;window.deviceHeight=%f",SCREEN_W,SCREEN_H]];
 }
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
+    if([error code] == NSURLErrorCancelled)  {
+        return;
+    }
     if (self.json[@"didFailLoadWithError"]) {
         [self.controller on:self.json[@"didFailLoadWithError"]];
     }
