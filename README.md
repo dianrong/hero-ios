@@ -8,7 +8,7 @@
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
-
+Hero详细介绍见 https://github.com/dianrong/Hero
 ## Requirements
 
 ## Installation
