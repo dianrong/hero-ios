@@ -24,7 +24,7 @@ TODO: Add long description of the pod here.
   s.homepage         = 'http://www.hero-mobile.com'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { '刘国平' => 'guoping.liu@dianrong.com' }
-  s.source           = { :git => 'https://code.dianrong.com/scm/mf/hero-ios.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/dianrong/hero-ios.git', :tag => s.version.to_s }
   s.social_media_url = 'http://www.hero-mobile.com'
 
   s.ios.deployment_target = '7.0'
