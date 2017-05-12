@@ -65,6 +65,13 @@
         double size = ((NSNumber*)json[@"size"]).doubleValue;
         self.font = [UIFont systemFontOfSize:size];
     }
+    if (json[@"weight"]) {
+        if(IOS8_OR_LATER){
+            double weight = ((NSNumber*)json[@"weight"]).doubleValue;
+            double size = ((NSNumber*)json[@"size"]).doubleValue;
+            self.font = [UIFont systemFontOfSize:size weight:weight];
+        }
+    }
     if (json[@"textColor"]) {
         self.textColor = UIColorFromStr(json[@"textColor"]);
     }
