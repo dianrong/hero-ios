@@ -504,6 +504,8 @@ static bool customUserAgentHasSet = false;
     if (_actionDatas[@"viewWillAppear"]) {
         [self on:_actionDatas[@"viewWillAppear"]];
     }
+    [self.webview stringByEvaluatingJavaScriptFromString:@"window.Hero && Hero.viewWillAppear()"];
+
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -526,6 +528,7 @@ static bool customUserAgentHasSet = false;
     if (_actionDatas[@"viewWillDisappear"]) {
         [self on:_actionDatas[@"viewWillDisappear"]];
     }
+    [self.webview stringByEvaluatingJavaScriptFromString:@"window.Hero && Hero.viewWillDisappear()"];
 }
 //子应用可以重载此方法实现一致的品牌loading效果
 -(void)showLoading:(NSString*)str{
