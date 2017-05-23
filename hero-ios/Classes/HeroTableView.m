@@ -242,6 +242,8 @@
     }
     if (cellItem[@"height"]) {
         return ((NSNumber*)cellItem[@"height"]).floatValue;
+    }else if (cellItem[@"frame"][@"h"]) {
+        return [cellItem[@"frame"][@"h"] floatValue];
     }
     return tableView.rowHeight;
 }
@@ -291,7 +293,6 @@
                 anotherCell.backgroundColor = [UIColor clearColor];
                 anotherCell.frame = cell.bounds;
                 [anotherCell addSubview:cell];
-                anotherCell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell = anotherCell;
             }
         }

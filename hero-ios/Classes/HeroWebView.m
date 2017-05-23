@@ -194,39 +194,24 @@
             return isLoad;
         }
     }
-    if ([request.URL.absoluteString hasPrefix:@"http"] || [request.URL.absoluteString hasPrefix:@"file"]) {
-        return YES;
-    }else{
-        if ([request.URL.absoluteString hasPrefix:@"hero://"]) {
-            NSString* str;
-            if ([request.URL.absoluteString hasSuffix:@"ready"]) {
-                str = [webView stringByEvaluatingJavaScriptFromString:
-                       @"Hero.outObjects()"];
-            }else{
-                str = [request.URL.absoluteString stringByReplacingOccurrencesOfString:@"hero://" withString:@""];
-                str = [str decodeFromPercentEscapeString];
-            }
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[str dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-            if (json != nil) {
-                [self.controller on:json];
-            }
+    if ([request.URL.absoluteString hasPrefix:@"hero://"]) {
+        NSString* str;
+        if ([request.URL.absoluteString hasSuffix:@"ready"]) {
+            str = [webView stringByEvaluatingJavaScriptFromString:
+                   @"Hero.outObjects()"];
         }else{
-            NSMutableDictionary *params = [NSMutableDictionary dictionary];
-            NSString *query = [[request URL] query];
-            NSArray *components = [query componentsSeparatedByString:@"&"];
-            for (NSString *component in components) {
-                NSArray *pair = [component componentsSeparatedByString:@"="];
-                if (pair.count == 2) {
-                    [params setObject:[[pair objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSMacOSRomanStringEncoding] forKey:[pair objectAtIndex:0]];
-                }
-            }
-            [self.controller on:@{@"common":params}];
+            str = [request.URL.absoluteString stringByReplacingOccurrencesOfString:@"hero://" withString:@""];
+            str = [str decodeFromPercentEscapeString];
         }
-        return false;
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:[str dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+        if (json != nil) {
+            [self.controller on:json];
+        }
+        return NO;
+    }else{
+        return YES;
     }
 }
-
-
 -(void)dealloc
 {
     DLog(@"webview dealloced");

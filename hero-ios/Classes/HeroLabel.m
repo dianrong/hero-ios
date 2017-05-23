@@ -66,10 +66,13 @@
         self.font = [UIFont systemFontOfSize:size];
     }
     if (json[@"weight"]) {
-        if(IOS8_OR_LATER){
-            double weight = ((NSNumber*)json[@"weight"]).doubleValue;
+        if(IOS_OR_LATER(8.2)){
             double size = ((NSNumber*)json[@"size"]).doubleValue;
-            self.font = [UIFont systemFontOfSize:size weight:weight];
+            if ([@"light" isEqualToString:json[@"weight"]]) {
+                self.font = [UIFont systemFontOfSize:size weight:UIFontWeightLight];
+            }else if([@"bold" isEqualToString:json[@"weight"]]){
+                self.font = [UIFont systemFontOfSize:size weight:UIFontWeightBold];
+            }
         }
     }
     if (json[@"textColor"]) {

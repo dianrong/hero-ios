@@ -58,6 +58,7 @@
 #define IOS8_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f)
 #define IOS9_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0f)
 #define IOS10_OR_LATER           ([[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0f)
+#define IOS_OR_LATER(v)           ([[[UIDevice currentDevice] systemVersion] floatValue] >= v)
 #define IS_IPAD                 ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
 
 #ifdef DEBUG
