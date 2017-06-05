@@ -504,8 +504,7 @@ static bool customUserAgentHasSet = false;
     if (_actionDatas[@"viewWillAppear"]) {
         [self on:_actionDatas[@"viewWillAppear"]];
     }
-    [self.webview stringByEvaluatingJavaScriptFromString:@"window.Hero && Hero.viewWillAppear()"];
-
+    [self.webview stringByEvaluatingJavaScriptFromString:@"document.readyState==='complete' && window.Hero && Hero.viewWillAppear()"];
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
