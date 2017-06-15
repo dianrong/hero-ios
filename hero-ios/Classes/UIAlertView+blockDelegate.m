@@ -58,7 +58,7 @@ didDismissWithButtonIndex:(NSInteger) buttonIndex {
     UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
     UIButton *shadowView = [[UIButton alloc] initWithFrame:[UIScreen mainScreen].bounds];
     // stopLoading使用的tag
-    shadowView.tag = 187698;
+    shadowView.tag = 733742;
     if (data[@"shadowColor"]) {
         shadowView.backgroundColor = UIColorFromStr(data[@"shadowColor"]);
     } else {
