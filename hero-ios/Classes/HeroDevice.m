@@ -84,6 +84,10 @@
             NSDictionary *dict = @{@"deviceId":@{@"value":@{@"uuid":uuid,@"idfa":[self idfaString],@"idfv":[self idfvString],}}};
             [self.controller on:dict];
         }
+        if (getInfo[@"wifiName"]) {
+            NSDictionary *dict = @{@"wifiName":@{@"value":self.currentWifiSSID ?: @""}};
+            [self.controller on:dict];
+        }
     }
     if (json[@"copy"]) {
         UIPasteboard *gpBoard = [UIPasteboard generalPasteboard];
@@ -100,6 +104,18 @@
         [dic setObject:@"iOS" forKey:@"system"];
         [self.controller on:dic];
     }
+}
+
+- (NSString *)currentWifiSSID {
+    NSString *ssid = nil;
+    NSArray *ifs = (id)CFBridgingRelease(CNCopySupportedInterfaces());
+    for (NSString *ifnam in ifs) {
+        NSDictionary *info = (id)CFBridgingRelease(CNCopyCurrentNetworkInfo((CFStringRef)ifnam));
+        if (info[@"SSID"]) {
+            ssid = info[@"SSID"];
+        }
+    }
+    return ssid;
 }
 
 - (NSString *)getDevicePlatform {
