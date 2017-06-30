@@ -35,6 +35,7 @@
 #import "HeroDevice.h"
 #include <sys/sysctl.h>
 #import <AdSupport/AdSupport.h>
+#import <SystemConfiguration/CaptiveNetwork.h>
 
 @implementation HeroDevice
 
