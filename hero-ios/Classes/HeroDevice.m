@@ -89,6 +89,16 @@
             NSDictionary *dict = @{@"wifiName":@{@"value":self.currentWifiSSID ?: @""}};
             [self.controller on:dict];
         }
+        if (getInfo[@"remoteNotificationType"]) {
+            UIUserNotificationType type = [[UIApplication sharedApplication] currentUserNotificationSettings].types;
+            if (type == UIRemoteNotificationTypeNone) {
+                NSDictionary *dict = @{@"remoteNotificationType":@{@"value":@"RemoteNotificationTypeNone"}};
+                [self.controller on:dict];
+            } else {
+                NSDictionary *dict = @{@"remoteNotificationType":@{@"value":@"RemoteNotificationTypeAvailable"}};
+                [self.controller on:dict];
+            }
+        }
     }
     if (json[@"copy"]) {
         UIPasteboard *gpBoard = [UIPasteboard generalPasteboard];
@@ -97,6 +107,10 @@
     if (json[@"paste"]) {
         UIPasteboard *gpBoard = [UIPasteboard generalPasteboard];
         [self.controller on:@{@"name":self.name,@"value":gpBoard.string}];
+    }
+    if (json[@"setting"]) {
+        NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:url];
     }
     if (json[@"getAppList"]) {
         id action = getInfo[@"getAppList"];
