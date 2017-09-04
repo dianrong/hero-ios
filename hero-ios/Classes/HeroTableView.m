@@ -48,7 +48,7 @@
 }
 - (instancetype)init
 {
-    self = [super init];
+    self = [super initWithFrame:CGRectZero style:(UITableViewStyleGrouped)];
     if (self) {
         UIView *head = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_W, 0)];
         head.backgroundColor = [UIColor clearColor];

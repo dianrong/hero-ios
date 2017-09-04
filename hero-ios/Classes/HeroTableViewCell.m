@@ -36,6 +36,7 @@
 #import "HeroTableViewCell.h"
 #import "HeroSwitch.h"
 #import "UILazyImageView.h"
+#import "UIView+Screenshot.h"
 
 @implementation HeroTableViewCell
 -(instancetype)initWithJson:(NSDictionary *)json viewController:(HeroViewController *)viewController
@@ -99,7 +100,9 @@
     self.textLabel.text = title;
     if (imageStr) {
         [UILazyImageView registerForName:imageStr block:^(NSData *data) {
-            self.imageView.image = [UIImage imageWithData:data scale:[UIScreen mainScreen].scale];
+            UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 66, 66)];
+            imageView.image = [UIImage imageWithData:data scale:[UIScreen mainScreen].scale];
+            self.imageView.image = [imageView screenshot];
             [self layoutSubviews];
         }];
     }
