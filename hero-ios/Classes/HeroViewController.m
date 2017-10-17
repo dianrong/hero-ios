@@ -417,11 +417,19 @@ static bool customUserAgentHasSet = false;
                     [UIView animateWithDuration:.3 animations:^{
                         _shadowView.alpha = 1;
                         _leftMenuView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+                        [self on:@{
+                                   @"event":@"sidebar",
+                                   @"value":@{@"opened":@(YES)}
+                                   }];
                     } completion:nil];
                 } else {
                     [UIView animateWithDuration:.3 animations:^{
                         _shadowView.alpha = 0;
                         _leftMenuView.frame = CGRectMake(- [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, 0, [UIScreen mainScreen].bounds.size.width * 2.0 / 3.0, [UIScreen mainScreen].bounds.size.height);
+                        [self on:@{
+                                   @"event":@"sidebar",
+                                   @"value":@{@"opened":@(NO)}
+                                   }];
                     } completion:nil];
                 }
             }
