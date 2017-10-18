@@ -155,7 +155,7 @@
     if (title && title.length > 0) {
         self.controller.title = title;
     }
-    [webView stringByEvaluatingJavaScriptFromString:@"document.readyState==='complete' && window.Hero && Hero.viewWillAppear()"];
+    [webView stringByEvaluatingJavaScriptFromString:@"window.Hero && Hero.viewWillAppear()"];
     if (self.json[@"webViewDidFinishLoad"]) {
         [self.controller on:self.json[@"webViewDidFinishLoad"]];
     }

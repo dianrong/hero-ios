@@ -466,11 +466,22 @@ static void *s_controller = &s_controller;
         }
         for (NSDictionary *dic in json[@"subViews"]) {
             NSString *type = dic[@"class"];
-            UIView *view = [[NSClassFromString(type) alloc]init];
-            view.controller = self.controller;
-            [self addSubview:view];
-            [view on:dic];
+            UIView *v = [[NSClassFromString(type) alloc]init];
+            v.controller = self.controller;
+            [self addSubview:v];
+            [v on:dic];
+            if ([self isKindOfClass:[UIScrollView class]]) {
+                if (v.frame.origin.y + v.frame.size.height > self.bounds.size.height-((UIScrollView*)self).contentInset.top-((UIScrollView*)self).contentInset.bottom) {
+                    ((UIScrollView*)self).scrollEnabled = true;
+                    ((UIScrollView*)self).contentSize = CGSizeMake(((UIScrollView*)self).contentSize.width, v.frame.origin.y + v.frame.size.height);
+                }
+                if (v.frame.origin.x + v.frame.size.width > self.bounds.size.width-((UIScrollView*)self).contentInset.left-((UIScrollView*)self).contentInset.right) {
+                    ((UIScrollView*)self).scrollEnabled = true;
+                    ((UIScrollView*)self).contentSize = CGSizeMake(v.frame.origin.x + v.frame.size.width,((UIScrollView*)self).contentSize.height);
+                }
+            }
         }
+
     }
 }
 
