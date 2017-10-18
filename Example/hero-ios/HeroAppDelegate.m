@@ -7,12 +7,35 @@
 //
 
 #import "HeroAppDelegate.h"
+#import "HeroApp.h"
+#import "UIView+hero.h"
+
+
+@interface HeroAppDelegate ()
+@property (nonatomic,strong) HeroApp *app;
+
+@end
+
 
 @implementation HeroAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.app = [[HeroApp alloc]init];
+    self.app.window = self.window;
+    NSString *urlHost = @"http://localhost:3000";
+    NSString *home = @"__PATH";
+    NSString *urlPath = [NSString stringWithFormat:@"%@%@",urlHost,[home hasPrefix:@"__"]?@"":home];
+    [self.app on:@{
+                   @"tabs":
+                       @[@{
+                             @"url":[NSString stringWithFormat:@"%@%@",urlPath,@"/home.html"],
+                             @"class":@"ViewController",
+                             }
+                         ]
+                   }];
+    return YES;
     return YES;
 }
 

@@ -7,7 +7,8 @@
 //
 
 @import UIKit;
+#import "HeroViewController.h"
 
-@interface HeroViewController1 : UIViewController
+@interface ViewController : HeroViewController
 
 @end

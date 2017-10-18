@@ -508,9 +508,8 @@ static bool customUserAgentHasSet = false;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
-    [self.navigationController setNavigationBarHidden:_isNavBarHidden animated:YES];
-    if (_actionDatas[@"viewWillAppear"]) {
-        [self on:_actionDatas[@"viewWillAppear"]];
+    if (self.ui) {
+        [self.navigationController setNavigationBarHidden:_isNavBarHidden animated:YES];
     }
     [self.webview stringByEvaluatingJavaScriptFromString:@"document.readyState==='complete' && window.Hero && Hero.viewWillAppear()"];
 }

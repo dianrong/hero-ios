@@ -55,7 +55,6 @@
     if (self) {
         //new app depreated
         [[NSNotificationCenter defaultCenter] addObserverForName:@"newApp" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            NSDictionary *json = note.object;
             [self on:note.object];
         }];
         //tabSelect depreated
@@ -64,7 +63,6 @@
         }];
         //app red dot
         [[NSNotificationCenter defaultCenter] addObserverForName:@"HeroApp" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-            NSDictionary *json = note.object;
             [self on:note.object];
         }];
     }
@@ -144,16 +142,16 @@
             vc.title = dic[@"title"];
             UITabBarItem *item = [[UITabBarItem alloc]initWithTitle:dic[@"title"] image:[UIImage imageNamed: dic[@"image"]] tag:0];
             [vc setTabBarItem:item];
-            UINavigationController *nav = [[UINavigationController alloc]initWithRootViewController:vc];
-            nav.navigationBar.translucent = _translucent;
-            [nav setNavigationBarHidden:NO];
-            [nav.view setTintColor:_tintColor?_tintColor:UIColorFromStr(@"37B98F")];
+            UINavigationController *nav1 = [[UINavigationController alloc]initWithRootViewController:vc];
+            nav1.navigationBar.translucent = _translucent;
+            [nav1 setNavigationBarHidden:NO];
+            [nav1.view setTintColor:_tintColor?_tintColor:UIColorFromStr(@"37B98F")];
             [APP setStatusBarStyle:UIStatusBarStyleLightContent];
             if (self.window) {
-                self.window.rootViewController = nav;
+                self.window.rootViewController = nav1;
                 [self.window makeKeyAndVisible];
             }else{
-                APP.keyWindow.rootViewController = nav;
+                APP.keyWindow.rootViewController = nav1;
                 [APP.keyWindow makeKeyAndVisible];
             }
         }
