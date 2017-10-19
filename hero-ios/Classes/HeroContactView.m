@@ -35,17 +35,47 @@
 
 #import "HeroContactView.h"
 @import AddressBook;
+#import <AddressBookUI/ABPeoplePickerNavigationController.h>
+@import AddressBook;
+#import <AddressBook/ABPerson.h>
+#import <AddressBookUI/ABPersonViewController.h>
 
+@interface HeroContactView()<ABPeoplePickerNavigationControllerDelegate, ABPersonViewControllerDelegate>
+@property (strong, nonatomic) ABPeoplePickerNavigationController *peoplePickerNavigationController;
+@end
 @implementation HeroContactView {
     NSMutableString *data;
     ABAuthorizationStatus status;
     id getContactObject;
     id getRecentObject;
-
 }
 
 -(void)on:(NSDictionary *)json{
     [super on:json];
+    if (json[@"show"]) {
+        [self askPermission];
+        if (kABAuthorizationStatusNotDetermined == status) {
+            ABAddressBookRequestAccessWithCompletion(ABAddressBookCreateWithOptions(NULL, nil), ^(bool granted, CFErrorRef error) {
+                if (granted){
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [self showContactPicker];
+                    });
+                } else {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [self notPermitted];
+                    });
+                }
+            });
+        } else if (kABAuthorizationStatusAuthorized == status) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self showContactPicker];
+            });
+        } else {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self notPermitted];
+            });
+        }
+    }
     if (json[@"getContact"]) {
         getContactObject = json[@"getContact"];
         [self askPermission];
@@ -137,6 +167,70 @@
     [dict setObject:@{@"contacts":contacts} forKey:@"value"];
     [self.controller on:dict];
     DLog(@"getContacts");
+}
+-(void)showContactPicker {
+    self.peoplePickerNavigationController = [[ABPeoplePickerNavigationController alloc] init];
+    _peoplePickerNavigationController.peoplePickerDelegate = self;
+    _peoplePickerNavigationController.displayedProperties = @[@(kABPersonPhoneProperty)];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        _peoplePickerNavigationController.predicateForSelectionOfPerson = [NSPredicate predicateWithValue:false];
+    }
+    
+    [self.controller presentViewController:_peoplePickerNavigationController animated:YES completion:nil];
+}
+-(void)onPicked:(NSDictionary *)data {
+    [self.controller on:@{@"name":self.name,@"value":data}];
+}
+-(void)cancel {
+    NSLog(@"cancel");
+}
+
+-(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person {
+    NSLog(@"shouldContinueAfterSelectingPerson");
+    return YES;
+}
+
+-(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier {
+    ABMultiValueRef phoneRecord = ABRecordCopyValue(person, property);
+    NSString *compositeName = (__bridge NSString *)ABRecordCopyCompositeName(person);
+    NSString * phoneNumber = nil;
+    int counts = (int)ABMultiValueGetCount(phoneRecord);
+    if (counts > identifier) {
+        phoneNumber = (__bridge NSString*)ABMultiValueCopyValueAtIndex(phoneRecord, identifier);
+    }
+    if (!compositeName) {
+        compositeName = @"";
+    }
+    NSDictionary *data = @{@"name": compositeName?:@"", @"phone": phoneNumber?:@""};
+    [self onPicked:data];
+    [_peoplePickerNavigationController dismissViewControllerAnimated:YES completion:nil];
+    return NO;
+}
+
+// Called after a property has been selected by the user.
+- (void)peoplePickerNavigationController:(ABPeoplePickerNavigationController*)peoplePicker didSelectPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier {
+    ABMultiValueRef phoneRecord = ABRecordCopyValue(person, property);
+    NSString *compositeName = (__bridge NSString *)ABRecordCopyCompositeName(person);
+    NSString * phoneNumber = nil;
+    int counts = (int)ABMultiValueGetCount(phoneRecord);
+    if (counts > identifier) {
+        phoneNumber = (__bridge NSString*)ABMultiValueCopyValueAtIndex(phoneRecord, identifier);
+    }
+    NSDictionary *data = @{@"name": compositeName?:@"", @"phone": phoneNumber?:@""};
+    [self onPicked:data];
+    DLog(@"result: %@", data);
+}
+
+// Called after the user has pressed cancel.
+- (void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker {
+    NSLog(@"peoplePickerNavigationControllerDidCancel");
+    [_peoplePickerNavigationController dismissViewControllerAnimated:YES completion:^{
+        //
+    }];
+}
+- (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier{
+    return true;
 }
 
 @end
