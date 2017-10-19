@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'hero-ios'
-  s.version          = '1.1.46'
+  s.version          = '1.1.47'
   s.summary          = 'A short description of hero-ios.'
 
 # This description is used to generate tags and improve search results.
