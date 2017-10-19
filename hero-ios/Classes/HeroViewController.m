@@ -503,6 +503,12 @@ static bool customUserAgentHasSet = false;
     }
     [self.webview on:@{@"url":url}];
 }
+-(BOOL)shouldLoadFromUrl:(NSString*)url{
+    if ([url hasPrefix:@"http"] ) {
+        return YES ;
+    }
+    return NO;
+}
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear: animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];

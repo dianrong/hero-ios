@@ -210,7 +210,7 @@
         }
         return NO;
     }else{
-        return YES;
+        return [self.controller shouldLoadFromUrl:path];
     }
 }
 -(void)dealloc

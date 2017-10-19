@@ -46,6 +46,7 @@
 
 -(instancetype)initWithUrl:(NSString*) url;
 -(instancetype)initWithJson:(NSDictionary*) json;
+-(BOOL)shouldLoadFromUrl:(NSString*)url;
 -(void)on:(NSDictionary *)json;
 
 @end
