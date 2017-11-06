@@ -43,12 +43,9 @@
 @end
 
 @implementation HeroImageView {
-    UILabel *emptyLabel;
-    UIImage *selectedImage;
     NSString *savePath;
     UIActionSheet *actionSheet;
     NSString *uploadUrl;
-    NSData *pngData;
     NSMutableURLRequest *request;
     NSMutableData *_responseData;
     UIView *shadowView;
@@ -68,7 +65,10 @@
     size_t index;
     size_t count;
     NSTimer *timer;
-
+    
+    //local file
+    NSString *localFile;
+    
 }
 
 - (instancetype)init {
@@ -82,9 +82,6 @@
 -(void)on:(NSDictionary *)json
 {
     [super on:json];
-    if (json[@"allowsEditing"]) {
-        allowsEditing = [json[@"allowsEditing"] boolValue];
-    }
     if (json[@"base64image"]) {
         NSString *imageStr = json[@"base64image"];
         NSRange range = [imageStr rangeOfString:@"^data:image/\\w+;base64," options:NSRegularExpressionSearch];
@@ -117,7 +114,13 @@
                 }];
             }];
         } else if (imageStr.length > 0) {
+            if ([imageStr hasPrefix:@"/"]) {
+                localFile = imageStr;
+            }
             UIImage *image = [UIImage imageNamed:imageStr];
+            if (!image) {
+                image = [UIImage imageWithContentsOfFile:imageStr];
+            }
             if (image) {
                 self.image = image;
             }else{
@@ -125,7 +128,7 @@
                 if (gifURL) {
                     NSData *_data = [NSData dataWithContentsOfURL:gifURL];
                     gifProperties = [NSDictionary dictionaryWithObject:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:0] forKey:(NSString *)kCGImagePropertyGIFLoopCount]
-                                                                              forKey:(NSString *)kCGImagePropertyGIFDictionary];
+                                                                forKey:(NSString *)kCGImagePropertyGIFDictionary];
                     gif = CGImageSourceCreateWithData((CFDataRef)_data, (CFDictionaryRef)gifProperties);
                     count =CGImageSourceGetCount(gif);
                     NSDictionary *dict = (NSDictionary*)CFBridgingRelease(CGImageSourceCopyPropertiesAtIndex(gif, 0, NULL));
@@ -137,93 +140,26 @@
             }
         }
     }
-    if (json[@"JSESSIONID"]) {
-    }
     if (json[@"headers"]) {
         headers = json[@"headers"];
     }
     if (json[@"uploadName"]) {
         uploadName = json[@"uploadName"];
     }
-    if (json[@"localImageReady"]) {
-        readyObject = json[@"localImageReady"];
-    }
-    if (json[@"localImageDelete"]) {
-        deleteObject = json[@"localImageDelete"];
-        self.userInteractionEnabled = YES;
-        self.clipsToBounds = YES;
-        if (!deleteBtn) {
-            deleteBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-            deleteBtn.frame = CGRectMake(self.frame.size.width-20, 0, 20, 20);
-            [deleteBtn setTitle:@"X" forState:UIControlStateNormal];
-            [deleteBtn setTitleColor:[UIColor whiteColor]  forState:UIControlStateNormal];
-            deleteBtn.backgroundColor = [UIColor grayColor];
-            deleteBtn.clipsToBounds = YES;
-            deleteBtn.layer.cornerRadius = deleteBtn.bounds.size.width/2;
-            [self addSubview:deleteBtn];
-            [deleteBtn addTarget:self action:@selector(onDelete:) forControlEvents:UIControlEventTouchUpInside];
-        }
-    }
     if (json[@"showBig"]) {
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(onTap:)];
         self.userInteractionEnabled = YES;
         [self addGestureRecognizer:tap];
     }
-    if (json[@"localImage"]) {
-        NSString *localImage = json[@"localImage"];
+    if (json[@"uploadUrl"]) {
         uploadUrl = json[@"uploadUrl"];
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSString *findPath = nil;
-        if ([localImage hasPrefix:@"/"]) {
-            findPath = localImage;
-        } else {
-            NSArray *paths = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-            NSURL *documentsURL = [paths firstObject];
-            if (documentsURL) {
-                findPath = [documentsURL.path stringByAppendingPathComponent:localImage];
-            }
-        }
-
-        // 存在本地目录
-        if ([fileManager fileExistsAtPath:findPath]) {
-            self.image = [UIImage imageWithContentsOfFile:findPath];
-            [self localImageReady:YES];
-        } else {
-            savePath = findPath;
-            self.image = nil;
-            emptyLabel = [[UILabel alloc] initWithFrame:self.bounds];
-            emptyLabel.userInteractionEnabled = YES;
-            emptyLabel.font = [UIFont systemFontOfSize:72];
-            emptyLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
-            emptyLabel.minimumScaleFactor = 12 / emptyLabel.font.pointSize;
-            emptyLabel.adjustsFontSizeToFitWidth = YES;
-            emptyLabel.textColor = UIColorFromRGB(0x444444);
-            emptyLabel.textAlignment = NSTextAlignmentCenter;
-            emptyLabel.text = @"﹢";
-            [self addSubview:emptyLabel];
-            CAShapeLayer *dashedborder = [CAShapeLayer layer];
-            dashedborder.strokeColor = UIColorFromRGB(0x999999).CGColor;
-            dashedborder.fillColor = nil;
-            dashedborder.lineDashPattern = @[@4, @2];
-            dashedborder.path = [UIBezierPath bezierPathWithRect:self.bounds].CGPath;
-            dashedborder.frame = self.bounds;
-            [emptyLabel.layer addSublayer:dashedborder];
-            UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onAdderTapped:)];
-            self.userInteractionEnabled = YES;
-            [emptyLabel addGestureRecognizer:tapGesture];
-            [self localImageReady:NO];
-        }
     }
     if (json[@"getImage"]) {
-        self.image = nil;
-        uploadUrl = json[@"uploadUrl"];
-
-        [self.gestureRecognizers enumerateObjectsUsingBlock:^(__kindof UIGestureRecognizer * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            [self removeGestureRecognizer:obj];
-        }];
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onAdderTapped:)];
-        self.userInteractionEnabled = YES;
-        [self addGestureRecognizer:tapGesture];
+        if (!actionSheet) {
+            actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照", @"从相册选择", nil];
+        }
+        [KEY_WINDOW endEditing:YES];
+        [actionSheet showInView:ROOT_VIEW];
     }
     if (json[@"getImageData"]) {
         float qulity = [json[@"getImageData"] floatValue];
@@ -232,14 +168,9 @@
         [dict setValue:datas forKey:@"value"];
         [self.controller on:dict];
     }
-}
-
-- (void)onAdderTapped:(id)sender {
-    if (!actionSheet) {
-        actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照", @"从相册选择", nil];
+    if (json[@"upload"]) {
+        [self uploadImage];
     }
-    [KEY_WINDOW endEditing:YES];
-    [actionSheet showInView:ROOT_VIEW];
 }
 -(void)onTap:(id)sender{
     CGRect rect = [self.superview convertRect:self.frame toView:KEY_WINDOW];
@@ -326,36 +257,19 @@
 #pragma mark - UIImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     [picker dismissViewControllerAnimated:YES completion:nil];
-    if (allowsEditing) {
-        selectedImage = [info objectForKey:UIImagePickerControllerEditedImage];
-    } else {
-        selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-    }
-
-    pngData = UIImageJPEGRepresentation(selectedImage, 0.3);
+    self.image  = [UIImage imageWithData:UIImageJPEGRepresentation([info objectForKey:UIImagePickerControllerOriginalImage], 0.3)];
     if (uploadUrl) {
         [self uploadImage];
-    } else {
-        [UIImageJPEGRepresentation(selectedImage, 0.3) writeToFile:savePath atomically:YES];
-        emptyLabel.text = nil;
-        emptyLabel.hidden = YES;
-        [self onShadowViewTapped];
-        self.image = selectedImage;
-        [self localImageReady:YES];
     }
 }
-
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self.controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)uploadImage {
     [self initPB];
-    if( [self setParams]){
-        //Creates and returns an initialized URL connection and begins to load the data for the URL request.
-        if([NSURLConnection connectionWithRequest:request delegate:self]){
-        };
-    }
+    [self setParams];
+    [NSURLConnection connectionWithRequest:request delegate:self];
 }
 
 #pragma mark - NSURLConnection Upload Image
@@ -365,7 +279,7 @@
     shadowView.backgroundColor = [UIColor blackColor];
     shadowView.alpha = 0.3;
     [ROOT_VIEW addSubview:shadowView];
-
+    
     progressView = [[DACircularProgressView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width)/2, ([UIScreen mainScreen].bounds.size.height)/2, 40.0f, 40.0f)];
     progressView.roundedCorners = YES;
     progressView.trackTintColor = [UIColor clearColor];
@@ -373,37 +287,34 @@
     [UIApplication sharedApplication].networkActivityIndicatorVisible = TRUE;
 }
 
--(BOOL) setParams{
-    if(pngData != nil){
-        request = [NSMutableURLRequest new];
-        if (headers) {
-            for (NSString *key in headers.allKeys) {
-                [request setValue:headers[key] forHTTPHeaderField:key];
-            }
+-(void) setParams{
+    request = [NSMutableURLRequest new];
+    if (headers) {
+        for (NSString *key in headers.allKeys) {
+            [request setValue:headers[key] forHTTPHeaderField:key];
         }
-        request.timeoutInterval = 20.0;
-        [request setURL:[NSURL URLWithString:uploadUrl]];
-        [request setHTTPMethod:@"POST"];
-
-        NSString *boundary = @"---------------------------14737809831466499882746641449";
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-        [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
-
-        NSMutableData *body = [NSMutableData data];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@.jpg\"\r\n", uploadName, uploadName] dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
-        [body appendData:[NSData dataWithData:pngData]];
-        [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-
-        [request setHTTPBody:body];
-        [request addValue:[NSString stringWithFormat:@"%@", [NSNumber numberWithInteger:[body length]]] forHTTPHeaderField:@"Content-Length"];
-
-        return TRUE;
-
-    } else{
-        return FALSE;
     }
+    request.timeoutInterval = 20.0;
+    [request setURL:[NSURL URLWithString:uploadUrl]];
+    [request setHTTPMethod:@"POST"];
+    
+    NSString *boundary = @"---------------------------14737809831466499882746641449";
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [request addValue:contentType forHTTPHeaderField: @"Content-Type"];
+    
+    NSMutableData *body = [NSMutableData data];
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@.jpg\"\r\n", uploadName, uploadName] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    if (localFile) {
+        [body appendData:[NSData dataWithContentsOfFile:localFile]];
+    }else{
+        [body appendData:[NSData dataWithData:UIImageJPEGRepresentation(self.image, 1.0)]];
+    }
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [request setHTTPBody:body];
+    [request addValue:[NSString stringWithFormat:@"%@", [NSNumber numberWithInteger:[body length]]] forHTTPHeaderField:@"Content-Length"];
 }
 
 #pragma mark NSURLConnection Delegate Methods
@@ -425,51 +336,18 @@
     if (_responseData) {
         NSError *err;
         NSDictionary *json = [NSJSONSerialization JSONObjectWithData:_responseData options:NSJSONReadingMutableContainers error:&err];
+        [self onShadowViewTapped];
         if (json) {
-            if(json[@"data"][@"download_url"]){
-                DLog(@"upload success: %@", json[@"data"][@"download_url"]);
-                [self onShadowViewTapped];
-                emptyLabel.text = nil;
-                emptyLabel.hidden = YES;
-                [self on:@{@"image":json[@"data"][@"download_url"]}];
-                [self localImageReady:YES];
-                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:readyObject];
-                [dict setObject:json[@"data"][@"download_url"] forKey:@"url"];
-                [self.controller on:dict];
-            }else if ([@"success" isEqualToString:json[@"result"]]) {
-                DLog(@"upload success: %@", json);
-                [UIImageJPEGRepresentation(selectedImage, 0.3) writeToFile:savePath atomically:YES];
-                emptyLabel.text = nil;
-                emptyLabel.hidden = YES;
-                [self onShadowViewTapped];
-                self.image = selectedImage;
-                [self localImageReady:YES];
-            } else {
-                if (json[@"errors"]) {
-                    [self.controller on:@{@"name":@"toast",@"text":json[@"errors"][0]}];
-                }
-                [self onShadowViewTapped];
-                [self localImageReady:NO];
-            }
-        } else {
-            NSString *responseText = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
-            DLog(@"server error: %@", responseText);
-            [self.controller on:@{@"name":@"toast",@"text":@"SERVER ERROR"}];
-            [self onShadowViewTapped];
-            [self localImageReady:NO];
+            [self.controller on:@{@"name":self.name,@"value":json}];
         }
     }
     [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    // The request has failed for some reason!
-    // Check the error var
     [self onShadowViewTapped];
-    [self localImageReady:NO];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = FALSE;
-    DLog(@"didFailWithError %@", error);
-    [self.controller on:@{@"name":@"toast",@"text":@"NETWORK ERROR"}];
+    [self.controller on:@{@"name":self.name,@"value":@"fail"}];
 }
 
 - (void)onShadowViewTapped {
@@ -481,18 +359,6 @@
     }];
 }
 
-- (void)localImageReady:(BOOL)ok {
-    if (deleteBtn) {
-        deleteBtn.hidden = !ok;
-    }
-    if (readyObject) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:readyObject];
-            [dict setObject:@(ok) forKey:@"value"];
-            [self.controller on:dict];
-        });
-    }
-}
 
 #pragma mark gif
 -(void)gifPlay

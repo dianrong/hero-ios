@@ -35,7 +35,7 @@
 		24067AA6F9DD8891839822A47D2BBB6C /* HeroTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4ACBCE2DCE380583066E4D23C556B404 /* HeroTextView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		256EB973C57DAFFF35DE56FE7A0B21E5 /* HeroBrowserCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C6DC9CDCB0E460C796AD44469931BAE /* HeroBrowserCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		25B5DDA8C26D1EED913695816FBE0303 /* MJRefreshGifHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = B6BA34019F6674DD84D4009E0035378B /* MJRefreshGifHeader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		25E2354D9C90F26ADF40BCFEB03280A2 /* HeroScanBarCodeView.h in Headers */ = {isa = PBXBuildFile; fileRef = 42BB90155A3C6AB35C483C20E53E95F9 /* HeroScanBarCodeView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		25E2354D9C90F26ADF40BCFEB03280A2 /* HeroScanView.h in Headers */ = {isa = PBXBuildFile; fileRef = 42BB90155A3C6AB35C483C20E53E95F9 /* HeroScanView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26CD1085D671A10BAC6568BCA01D9D1A /* HeroCheckBox.m in Sources */ = {isa = PBXBuildFile; fileRef = E70EDF3F247AB0E6BD851C1B6CC34296 /* HeroCheckBox.m */; };
 		2C5DBB2243CC5E5B4CA2EED6C41BEC48 /* HeroAddCell.h in Headers */ = {isa = PBXBuildFile; fileRef = FCCE726356792A25ADA0CF2759EEEBE2 /* HeroAddCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2E6B63DF3C5C2E5A89592D248248BE91 /* HeroSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = D014053D1FE72CC0844FE35387B1DD73 /* HeroSlider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -69,7 +69,7 @@
 		4AFBD5ADEF674C2A74E34E59DA4D591F /* HeroViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 592A777B93401F7826003C8DC1906F8E /* HeroViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4E06A3ECAF208BAE046AEDFCE1474E5D /* HeroUploadFlowLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = E368D1F8F33DF40EB1404CCEC12EA29E /* HeroUploadFlowLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4E3C2ACB0C12A706E043641F445D6B03 /* DACircularProgressView.h in Headers */ = {isa = PBXBuildFile; fileRef = 99DABEF6A8FB8F725C3BC50CC7B7383F /* DACircularProgressView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		50F30FC646C87A2758700435DD8A7E4D /* HeroScanBarCodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E432E89D069752DB261882DCBBDDF767 /* HeroScanBarCodeView.m */; };
+		50F30FC646C87A2758700435DD8A7E4D /* HeroScanView.m in Sources */ = {isa = PBXBuildFile; fileRef = E432E89D069752DB261882DCBBDDF767 /* HeroScanView.m */; };
 		5274DAB8FD7CAD5F2E90E0F3E34048A7 /* HeroTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = 13545048A831852E3918F78F0D93C493 /* HeroTextField.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		587E1ABB068FFAE7216A8947C408FFFF /* HeroButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 832FB186009C51C3FA68C25773830ECC /* HeroButton.m */; };
 		58FF8568869DFEC297DC745427FF1F41 /* MJRefreshBackStateFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FEB4640E702126A3ED268088EC8C72CD /* MJRefreshBackStateFooter.m */; };
@@ -258,7 +258,7 @@
 		3D7585E95B71DF8BDB4986173FEC1A2D /* HeroSegmentControl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HeroSegmentControl.h; sourceTree = "<group>"; };
 		3FD95F9A575DA0E1D4BBCAF0D229D38B /* MJRefreshAutoGifFooter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MJRefreshAutoGifFooter.h; path = MJRefresh/Custom/Footer/Auto/MJRefreshAutoGifFooter.h; sourceTree = "<group>"; };
 		41D453E2E2335E3FFD7920541981E6F5 /* hero-ios-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "hero-ios-prefix.pch"; sourceTree = "<group>"; };
-		42BB90155A3C6AB35C483C20E53E95F9 /* HeroScanBarCodeView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HeroScanBarCodeView.h; sourceTree = "<group>"; };
+		42BB90155A3C6AB35C483C20E53E95F9 /* HeroScanView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HeroScanView.h; sourceTree = "<group>"; };
 		4522247688FE9A5A3B4C53BF06A96F1A /* MJRefreshAutoNormalFooter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MJRefreshAutoNormalFooter.h; path = MJRefresh/Custom/Footer/Auto/MJRefreshAutoNormalFooter.h; sourceTree = "<group>"; };
 		452FA9910BA9BB2D5CFCF243742592F9 /* MJRefreshAutoGifFooter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MJRefreshAutoGifFooter.m; path = MJRefresh/Custom/Footer/Auto/MJRefreshAutoGifFooter.m; sourceTree = "<group>"; };
 		45400A57EA3EF779641D7704FC82798A /* UIAlertView+blockDelegate.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIAlertView+blockDelegate.h"; sourceTree = "<group>"; };
@@ -378,7 +378,7 @@
 		E01F2FCD38CE99A6C90BFB384075DEB5 /* HeroWebView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HeroWebView.m; sourceTree = "<group>"; };
 		E2DA7CF56E25C59A0ECA178EBADEE6C3 /* HeroTableView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HeroTableView.h; sourceTree = "<group>"; };
 		E368D1F8F33DF40EB1404CCEC12EA29E /* HeroUploadFlowLayout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = HeroUploadFlowLayout.h; sourceTree = "<group>"; };
-		E432E89D069752DB261882DCBBDDF767 /* HeroScanBarCodeView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HeroScanBarCodeView.m; sourceTree = "<group>"; };
+		E432E89D069752DB261882DCBBDDF767 /* HeroScanView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HeroScanView.m; sourceTree = "<group>"; };
 		E4C243C1A63D6440FD54BD88944597F5 /* HeroBrowserCell.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = HeroBrowserCell.m; sourceTree = "<group>"; };
 		E4E5091461EC3FC21FC0ED1F24820FE0 /* NSString+Additions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		E57841BBF2D79905EB9EEB0187BC5DB7 /* Pods-hero-ios_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-hero-ios_Example-resources.sh"; sourceTree = "<group>"; };
@@ -560,8 +560,8 @@
 				6B3401F6C0BA5125116D08062A01C799 /* HeroPhotoImage.h */,
 				2C545717ED0B0D355F046CE726FB756C /* HeroPickerView.h */,
 				C663D5FD2FE299860A66BB31F0981DC2 /* HeroPickerView.m */,
-				42BB90155A3C6AB35C483C20E53E95F9 /* HeroScanBarCodeView.h */,
-				E432E89D069752DB261882DCBBDDF767 /* HeroScanBarCodeView.m */,
+				42BB90155A3C6AB35C483C20E53E95F9 /* HeroScanView.h */,
+				E432E89D069752DB261882DCBBDDF767 /* HeroScanView.m */,
 				A7E14CD761A24E720C91B8666F4C0C33 /* HeroScrollView.h */,
 				D852B53217FE5FAF2595921B1705C861 /* HeroScrollView.m */,
 				3D7585E95B71DF8BDB4986173FEC1A2D /* HeroSegmentControl.h */,
@@ -777,7 +777,7 @@
 				FE259C130BCFFF506DFBB2804940D358 /* HeroPhotoBrowerViewController.h in Headers */,
 				7756C5BDBBEEE7B8979049B7F8CBC19F /* HeroPhotoImage.h in Headers */,
 				A2DED97E541B38FBFACCA05238AC9CC9 /* HeroPickerView.h in Headers */,
-				25E2354D9C90F26ADF40BCFEB03280A2 /* HeroScanBarCodeView.h in Headers */,
+				25E2354D9C90F26ADF40BCFEB03280A2 /* HeroScanView.h in Headers */,
 				B548883763E4B618AF20FB7D0551937F /* HeroScrollView.h in Headers */,
 				A7698CC2DDE6A9440FBF1B4101105BB4 /* HeroSegmentControl.h in Headers */,
 				4A36E1A91F984383009EA762 /* HeroActionSheetView.h in Headers */,
@@ -961,7 +961,7 @@
 				7ACFCB59536B6BF8E989FA022BA0FC82 /* HeroLockPatternView.m in Sources */,
 				810BE6212CAA6102F4A0784CA73FC4D7 /* HeroPhotoBrowerViewController.m in Sources */,
 				408464B9B62D5D7BC4A89119CB1E6BDE /* HeroPickerView.m in Sources */,
-				50F30FC646C87A2758700435DD8A7E4D /* HeroScanBarCodeView.m in Sources */,
+				50F30FC646C87A2758700435DD8A7E4D /* HeroScanView.m in Sources */,
 				40DE88297E869F74987D9D2D1ACCA62C /* HeroScrollView.m in Sources */,
 				4A36E1A41F984089009EA762 /* HeroCodeView.m in Sources */,
 				E05EF84B6F126A28D7557B8A375A9565 /* HeroSegmentControl.m in Sources */,

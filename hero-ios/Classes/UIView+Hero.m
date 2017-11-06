@@ -80,6 +80,24 @@ static void *s_controller = &s_controller;
 -(NSArray *)obersevers{
     return self.json[@"obersevers"];
 }
+-(float) calcStr:(NSString *) x p:(float)p{
+    float xInt;
+    if ([[x componentsSeparatedByString:@"+"] count] > 1) {
+        NSString * x1 = [x componentsSeparatedByString:@"+"][0];
+        NSString * x2 = [x componentsSeparatedByString:@"+"][1];
+        xInt = ([x1 hasSuffix:@"x"] ?  [x1 floatValue]*p : [x1 floatValue]) + ([x2 hasSuffix:@"x"] ? ( [x2 floatValue] * p) : [x2 floatValue]);
+    }else if([[x componentsSeparatedByString:@"-"] count] > 1){
+        NSString * x1 = [x componentsSeparatedByString:@"-"][0];
+        if (x1 && x1.length == 0) {
+            x1 = @"0";
+        }
+        NSString * x2 = [x componentsSeparatedByString:@"-"][1];
+        xInt = ([x1 hasSuffix:@"x"] ?  [x1 floatValue]*p : [x1 floatValue]) - ([x2 hasSuffix:@"x"] ? ( [x2 floatValue] * p) : [x2 floatValue]);
+    }else{
+        xInt = ([x hasSuffix:@"x"] ?  [x floatValue]*p : [x floatValue]);
+    }
+    return xInt;
+}
 -(UIView*) findViewByName:(NSString*)name{
     if (!name) {
         return nil;
@@ -118,7 +136,6 @@ static void *s_controller = &s_controller;
     }
     return nil;
 }
-
 -(void)on:(NSDictionary *)json{
     if (json[@"class"]) {   //一般适用于数据不太改变，table需要自己维护自己的datasource
         self.json = json;
@@ -233,35 +250,35 @@ static void *s_controller = &s_controller;
         NSString *b = json[@"frame"][@"b"];
         CGRect rect = CGRectMake(0, 0, 0, 0);
         if (x) {
-            rect.origin.x = [x hasSuffix:@"x"]?[x floatValue]*PARENT_W:[x floatValue];
+            rect.origin.x = [self calcStr:x p:PARENT_W];
         }
         if (y) {
-            rect.origin.y = [y hasSuffix:@"x"]?[y floatValue]*PARENT_H:[y floatValue];
+            rect.origin.y = [self calcStr:y p:PARENT_H];
         }
         if (l) {
-            rect.origin.x = [l hasSuffix:@"x"]?[l floatValue]*PARENT_W:[l floatValue];
+            rect.origin.x = [self calcStr:l p:PARENT_W];
         }
         if (t) {
-            rect.origin.y = [t hasSuffix:@"x"]?[t floatValue]*PARENT_H:[t floatValue];
+            rect.origin.y = [self calcStr:t p:PARENT_H];
         }
         if (w) {
-            rect.size.width = [w hasSuffix:@"x"]?[w floatValue]*PARENT_W:[w floatValue];
+            rect.size.width = [self calcStr:w p:PARENT_W];
         }
         if (h) {
-            rect.size.height = [h hasSuffix:@"x"]?[h floatValue]*PARENT_H:[h floatValue];
+            rect.size.height = [self calcStr:h p:PARENT_H];
         }
         if (r) {
             if ((!x) && (!l)) {
-                rect.origin.x = PARENT_W - (rect.size.width + ([r hasSuffix:@"x"]?[r floatValue]*PARENT_W:[r floatValue]));
+                rect.origin.x = PARENT_W - (rect.size.width + ([self calcStr:r p:PARENT_W]));
             }else{
-                rect.size.width = PARENT_W - (rect.origin.x + ([r hasSuffix:@"x"]?[r floatValue]*PARENT_W:[r floatValue]));
+                rect.size.width = PARENT_W - (rect.origin.x + ([self calcStr:r p:PARENT_W]));
             }
         }
         if (b) {
             if ((!t) && (!y)) {
-                rect.origin.y = PARENT_H - (rect.size.height + ([b hasSuffix:@"x"]?[b floatValue]*PARENT_H:[b floatValue]));
+                rect.origin.y = PARENT_H - (rect.size.height + ([self calcStr:b p:PARENT_H]));
             }else{
-                rect.size.height = PARENT_H - (rect.origin.y + ([b hasSuffix:@"x"]?[b floatValue]*PARENT_H:[b floatValue]));
+                rect.size.height = PARENT_H - (rect.origin.y + ([self calcStr:b p:PARENT_H]));
             }
         }
         if (json[@"yOffset"]) {
@@ -443,6 +460,11 @@ static void *s_controller = &s_controller;
                 }
                 [self addGestureRecognizer:ges];
             }
+            if ([@"longpress" isEqualToString:gesObject[@"name"]] ) {
+                UILongPressGestureRecognizer *ges = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onHeroSwip:)];
+                ges.minimumPressDuration = 2.0f;
+                [self addGestureRecognizer:ges];
+            }
         }
     }
     if (json[@"gradientBackgroundColor"]) {
@@ -488,8 +510,8 @@ static void *s_controller = &s_controller;
 -(void)onHeroSwip:(UISwipeGestureRecognizer *)sender{
     int tag = [sender.accessibilityValue intValue];
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    [dic setDictionary:self.json[@"gesture"]];
     [dic setValue:@(tag) forKey:@"value"];
-    [dic setValue:self.json[@"gesture"] forKey:@"gesture"];
     [dic setValue:self.name forKey:@"name"];
     [self.controller on:dic];
 }

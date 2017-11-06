@@ -100,7 +100,7 @@
     self.textLabel.text = title;
     if (imageStr) {
         [UILazyImageView registerForName:imageStr block:^(NSData *data) {
-            UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 66, 66)];
+            UIImageView * imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0,json[@"imageValue"]?[json[@"imageValue"] floatValue]/2:30 , json[@"imageValue"]?[json[@"imageValue"] floatValue]/2:30 )];
             imageView.image = [UIImage imageWithData:data scale:[UIScreen mainScreen].scale];
             self.imageView.image = [imageView screenshot];
             [self layoutSubviews];

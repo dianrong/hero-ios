@@ -70,6 +70,9 @@
         }
         self.contentOffset = CGPointMake(MIN(x.floatValue,MAX(0,self.contentSize.width-self.bounds.size.width)), MIN(y.floatValue,MAX(0,self.contentSize.height-self.bounds.size.height)));
     }
+    if (json[@"pagingEnabled"]) {
+        self.pagingEnabled = true;
+    }
 //    if (json[@"pullRefresh"]) {
 //        if (self.contentSize.height < self.bounds.size.height) {
 //            self.contentSize = CGSizeMake(0, self.bounds.size.height+1);

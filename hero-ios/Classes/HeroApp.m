@@ -34,6 +34,8 @@
 
 #import "HeroApp.h"
 #import "UIView+Hero.h"
+#import <CoreImage/CoreImage.h>
+
 @interface UITabBar (badge)
 - (void)showBadgeOnItemIndex:(int)index;   //显示小红点
 - (void)hideBadgeOnItemIndex:(int)index; //隐藏小红点
@@ -126,8 +128,6 @@
             nav = [[UINavigationController alloc]initWithRootViewController:tabCon];
             nav.navigationBar.translucent = _translucent;
             [nav setNavigationBarHidden:NO];
-            [tabCon.view setTintColor:_tintColor?_tintColor:UIColorFromStr(@"37B98F")];
-            [APP setStatusBarStyle:UIStatusBarStyleLightContent];
             if (self.window) {
                 self.window.rootViewController = nav;
                 [self.window makeKeyAndVisible];
@@ -143,10 +143,6 @@
             UITabBarItem *item = [[UITabBarItem alloc]initWithTitle:dic[@"title"] image:[UIImage imageNamed: dic[@"image"]] tag:0];
             [vc setTabBarItem:item];
             UINavigationController *nav1 = [[UINavigationController alloc]initWithRootViewController:vc];
-            nav1.navigationBar.translucent = _translucent;
-            [nav1 setNavigationBarHidden:NO];
-            [nav1.view setTintColor:_tintColor?_tintColor:UIColorFromStr(@"37B98F")];
-            [APP setStatusBarStyle:UIStatusBarStyleLightContent];
             if (self.window) {
                 self.window.rootViewController = nav1;
                 [self.window makeKeyAndVisible];
@@ -154,6 +150,11 @@
                 APP.keyWindow.rootViewController = nav1;
                 [APP.keyWindow makeKeyAndVisible];
             }
+        }
+        if (_tintColor) {
+            [APP.keyWindow setTintColor:_tintColor];
+            CIColor *_tintColorCI = [[CIColor alloc]initWithColor:_tintColor];
+            [APP setStatusBarStyle: _tintColorCI.red+_tintColorCI.green+_tintColorCI.blue>1?UIStatusBarStyleDefault: UIStatusBarStyleLightContent];
         }
     }
 }
