@@ -171,6 +171,29 @@ static bool customUserAgentHasSet = false;
         {
             [v removeFromSuperview];
         }
+        if (ui[@"backgroundColor"]) {
+            self.view.backgroundColor = UIColorFromStr(ui[@"backgroundColor"]);
+        }
+        if (ui[@"tintColor"]) {
+            if (ui[@"backgroundColor"]) {
+                UIColor *titleColor = UIColorFromStr(ui[@"backgroundColor"]);
+                [self.navigationController.navigationBar setTintColor:titleColor];
+            }
+            if (self.navigationController.navigationBar.translucent) {
+                [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:[UIColor clearColor]] forBarMetrics:UIBarMetricsDefault];
+                UIView *bar = [[UIView alloc]init];
+                if (@available(iOS 11.0, *)) {
+                    float safeTop = [self.view safeAreaInsets].top;
+                    [bar on: [NSMutableDictionary dictionaryWithDictionary: @{@"class":@"UIView",@"name":@"scroll_fix_header",@"frame":@{@"y":[NSString stringWithFormat:@"-%f",safeTop],@"w":@"1x",@"h":[NSString stringWithFormat:@"%f",safeTop]},@"backgroundColor":ui[@"tintColor"]}]];
+                }else{
+                    [bar on: [NSMutableDictionary dictionaryWithDictionary: @{@"class":@"UIView",@"name":@"scroll_fix_header",@"frame":@{@"y":@"-64",@"w":@"1x",@"h":@"64"},@"backgroundColor":ui[@"tintColor"]}]];
+                }
+                [self.view addSubview:bar];
+            }else{
+                [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor clearColor]]];
+                [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:UIColorFromStr(ui[@"tintColor"])] forBarMetrics:UIBarMetricsDefault];
+            }
+        }
         if (ui[@"nav"]) {
             [self on:@{@"appearance":ui[@"nav"]}];
         }
@@ -202,19 +225,6 @@ static bool customUserAgentHasSet = false;
             if (v.frame.origin.y + v.frame.size.height > self.view.bounds.size.height-((UIScrollView*)self.view).contentInset.top-((UIScrollView*)self.view).contentInset.bottom) {
                 ((UIScrollView*)self.view).scrollEnabled = true;
                 ((UIScrollView*)self.view).contentSize = CGSizeMake(((UIScrollView*)self.view).contentSize.width, v.frame.origin.y + v.frame.size.height);
-            }
-        }
-        if (ui[@"backgroundColor"]) {
-            self.view.backgroundColor = UIColorFromStr(ui[@"backgroundColor"]);
-        }
-        if (ui[@"tintColor"]) {
-            if (self.navigationController.navigationBar.translucent) {
-                UIView *bar = [[UIView alloc]init];
-                [bar on: [NSMutableDictionary dictionaryWithDictionary: @{@"class":@"UIView",@"name":@"scroll_fix_header",@"frame":@{@"y":@"-64",@"w":@"1x",@"h":@"64"},@"backgroundColor":ui[@"tintColor"]}]];
-                [self.view addSubview:bar];
-            }else{
-                [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor clearColor]]];
-                [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:UIColorFromStr(ui[@"tintColor"])] forBarMetrics:UIBarMetricsDefault];
             }
         }
     }
@@ -280,10 +290,15 @@ static bool customUserAgentHasSet = false;
         if (appearance[@"navigationBarHidden"]) {
             _isNavBarHidden = [appearance[@"navigationBarHidden"] boolValue];
             if (self.navigationController.navigationBar.translucent) {
-                if (_isNavBarHidden) {
-                    ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                if (@available(iOS 11.0, *)) {
+                    float safeTop = [self.view safeAreaInsets].top;
+                    ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(safeTop, 0, 0, 0);
                 }else{
-                    ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+                    if (_isNavBarHidden) {
+                        ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+                    }else{
+                        ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
+                    }
                 }
             }
             [self.navigationController setNavigationBarHidden:_isNavBarHidden];
@@ -297,6 +312,9 @@ static bool customUserAgentHasSet = false;
             [self.navigationController.navigationBar setTranslucent:YES];
             [self.navigationController.navigationBar setShadowImage:[UIImage imageWithColor:[UIColor clearColor]]];
             [self.navigationController.navigationBar setBackgroundImage:[UIImage imageWithColor:_navigationBarColor] forBarMetrics:UIBarMetricsDefault];
+        }
+        if (appearance[@"titleColor"]) {
+            [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : UIColorFromStr(appearance[@"titleColor"])}];
         }
     }
     else if (json[@"command"]) {
