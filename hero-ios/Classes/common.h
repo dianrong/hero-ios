@@ -42,6 +42,7 @@
 #define APP                     [UIApplication sharedApplication]
 #define SCALE                   [[UIScreen mainScreen]scale]
 #define PARENT_W                (self.superview.bounds.size.width?(self.superview.bounds.size.width-([self.superview isKindOfClass:[UIScrollView class]]?(((UIScrollView*)self.superview).contentInset.left + ((UIScrollView*)self.superview).contentInset.right):0)):CONTROLLER_W)
+
 #define PARENT_H                (self.superview.bounds.size.height?(self.superview.bounds.size.height-([self.superview isKindOfClass:[UIScrollView class]]?(((UIScrollView*)self.superview).contentInset.top + ((UIScrollView*)self.superview).contentInset.bottom):0)):CONTROLLER_H)
 #define NOT_NULL(s)             (s?s:@"")
 #define LS(str)                 NSLocalizedString(str, nil)

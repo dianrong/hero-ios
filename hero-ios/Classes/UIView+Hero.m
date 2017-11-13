@@ -191,7 +191,33 @@ static void *s_controller = &s_controller;
     }
     //hidden
     if (json[@"hidden"]) {
-        self.hidden = ((NSNumber*)(json[@"hidden"])).boolValue;
+        BOOL hidden = ((NSNumber*)(json[@"hidden"])).boolValue;
+        if (hidden) {
+            if (self.json[@"contentSizeElementY"]) {
+                if ([self.superview isKindOfClass:[UIScrollView class]]) {
+                    UIScrollView *scrollView = (UIScrollView*)self.superview;
+                    CGSize contentSize = CGSizeMake(scrollView.contentSize.width, self.frame.origin.y);
+                    scrollView.contentSize = contentSize;
+                }else if ([self.superview isKindOfClass:[UIView class]]){
+                    NSDictionary *frame = self.superview.json[@"frame"];
+                    [frame setValue:[NSString stringWithFormat:@"%@",@(self.frame.origin.y)] forKey:@"h"];
+                    [self.superview on:@{@"frame":frame}];
+                }
+            }
+        }else{
+            if (self.json[@"contentSizeElementY"]) {
+                if ([self.superview isKindOfClass:[UIScrollView class]]) {
+                    UIScrollView *scrollView = (UIScrollView*)self.superview;
+                    CGSize contentSize = CGSizeMake(scrollView.contentSize.width, self.frame.origin.y+self.frame.size.height);
+                    scrollView.contentSize = contentSize;
+                }else if ([self.superview isKindOfClass:[UIView class]]){
+                    NSDictionary *frame = self.superview.json[@"frame"];
+                    [frame setValue:[NSString stringWithFormat:@"%@",@(self.frame.origin.y+self.frame.size.height)] forKey:@"h"];
+                    [self.superview on:@{@"frame":frame}];
+                }
+            }
+        }
+        self.hidden = hidden;
     }
     if (json[@"ios_hidden"]) {
         self.hidden = ((NSNumber*)(json[@"ios_hidden"])).boolValue;
@@ -281,11 +307,8 @@ static void *s_controller = &s_controller;
                 rect.size.height = PARENT_H - (rect.origin.y + ([self calcStr:b p:PARENT_H]));
             }
         }
-        if (json[@"yOffset"]) {
-            if (self.json[@"yOffset"] != json[@"yOffset"]) {
-                [self.json setValue:json[@"yOffset"] forKey:@"yOffset"];
-            }
-            NSString *yOffset = json[@"yOffset"]; //name+offset
+        if (self.json[@"yOffset"]) {
+            NSString *yOffset = self.json[@"yOffset"]; //name+offset
             NSString *name = [yOffset componentsSeparatedByString:@"+"][0];
             float offset = [[yOffset componentsSeparatedByString:@"+"][1] floatValue];
             UIView *top = [self.superview findViewByName:name] ?: [self.controller.view findViewByName:name];
@@ -296,7 +319,7 @@ static void *s_controller = &s_controller;
                 [layoutListenners addObject:self];
             }
         }
-        if (json[@"xOffset"]) {
+        if (self.json[@"xOffset"]) {
             if (self.json[@"xOffset"] != json[@"xOffset"]) {
                 [self.json setValue:json[@"xOffset"] forKey:@"xOffset"];
             }
@@ -356,7 +379,7 @@ static void *s_controller = &s_controller;
             self.frame = self.superview.bounds;
         }
     }
-    if (json[@"center"]) {
+    if (self.json[@"center"]) {
         NSString *x = json[@"center"][@"x"];
         NSString *y = json[@"center"][@"y"];
         CGPoint center = CGPointMake([x hasSuffix:@"x"]?x.floatValue*PARENT_W:x.floatValue, [y hasSuffix:@"x"]?y.floatValue*PARENT_H:y.floatValue);
