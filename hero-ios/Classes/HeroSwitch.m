@@ -46,6 +46,9 @@
     if (json[@"value"]) {
         self.on =  ((NSNumber*)json[@"value"]).boolValue ;
     }
+    if (json[@"onTintColor"]) {
+        self.onTintColor = UIColorFromStr(json[@"onTintColor"]);
+    }
 }
 -(void)onClicked:(UISwitch*)sw
 {
