@@ -289,19 +289,19 @@ static bool customUserAgentHasSet = false;
         }
         if (appearance[@"navigationBarHidden"]) {
             _isNavBarHidden = [appearance[@"navigationBarHidden"] boolValue];
-            if (self.navigationController.navigationBar.translucent) {
-                if (@available(iOS 11.0, *)) {
-                    float safeTop = [self.view safeAreaInsets].top;
-                    ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(safeTop, 0, 0, 0);
-                }else{
-                    if (_isNavBarHidden) {
-                        ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+            [self.navigationController setNavigationBarHidden:_isNavBarHidden];
+            if (_isNavBarHidden) {
+                ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+            }else{
+                if ( self.navigationController.navigationBar.translucent) {
+                    if (@available(iOS 11.0, *)) {
+                        float safeTop = [self.view safeAreaInsets].top;
+                        ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(safeTop, 0, 0, 0);
                     }else{
                         ((UIScrollView*)self.view).contentInset = UIEdgeInsetsMake(64, 0, 0, 0);
                     }
                 }
             }
-            [self.navigationController setNavigationBarHidden:_isNavBarHidden];
         }
         if (appearance[@"navigationBarTranslucent"]) {
             _isNavBarTranslucent = [appearance[@"navigationBarTranslucent"] boolValue];

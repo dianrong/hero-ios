@@ -161,7 +161,7 @@
     }
     if (self.controller.webview.superview) { //普通web页面
         if (!_ownnerLabel) {
-            _ownnerLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 48)];
+            _ownnerLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, self.scrollView.contentInset.top, self.bounds.size.width, 48)];
             _ownnerLabel.textAlignment = NSTextAlignmentCenter;
             _ownnerLabel.font = [UIFont systemFontOfSize:12];
             _ownnerLabel.textColor = UIColorFromRGB(0xaaaaaa);

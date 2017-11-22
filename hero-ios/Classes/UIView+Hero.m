@@ -380,8 +380,8 @@ static void *s_controller = &s_controller;
         }
     }
     if (self.json[@"center"]) {
-        NSString *x = json[@"center"][@"x"];
-        NSString *y = json[@"center"][@"y"];
+        NSString *x = self.json[@"center"][@"x"];
+        NSString *y = self.json[@"center"][@"y"];
         CGPoint center = CGPointMake([x hasSuffix:@"x"]?x.floatValue*PARENT_W:x.floatValue, [y hasSuffix:@"x"]?y.floatValue*PARENT_H:y.floatValue);
         [self.json[@"frame"] setValue:[NSString stringWithFormat:@"%f",center.x-self.bounds.size.width/2] forKey:@"x"];
         [self.json[@"frame"] setValue:[NSString stringWithFormat:@"%f",center.y-self.bounds.size.height/2] forKey:@"y"];
